@@ -1,0 +1,54 @@
+{% block navbar %}
+<nav class="bg-white shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16">
+            <div class="flex">
+                <!-- Logo -->
+                <div class="flex-shrink-0 flex items-center">
+                    <a href="{{ url_for('index') }}" class="text-2xl font-bold text-primary">
+                        Diagnosia
+                    </a>
+                </div>
+
+                <!-- Navigation Links -->
+                <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+                    <a href="{{ url_for('index') }}" class="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-900 {% if request.endpoint == 'index' %}border-b-2 border-highlight{% endif %}">
+                        Home
+                    </a>
+                    <a href="{{ url_for('diagnosis') }}" class="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-900 {% if request.endpoint == 'diagnosis' %}border-b-2 border-highlight{% endif %}">
+                        Diagnosis
+                    </a>
+                    <a href="{{ url_for('radiology') }}" class="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-900 {% if request.endpoint == 'radiology' %}border-b-2 border-highlight{% endif %}">
+                        Radiology
+                    </a>
+                    <a href="{{ url_for('drai_chat') }}" class="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-900 {% if request.endpoint == 'drai_chat' %}border-b-2 border-highlight{% endif %}">
+                        Dr.AI Chat
+                    </a>
+                </div>
+            </div>
+
+            <!-- User Menu -->
+            <div class="flex items-center">
+                {% if session.get('user_id') %}
+                    <a href="{{ url_for('history') }}" class="text-gray-700 hover:text-highlight px-3 py-2 rounded-md text-sm font-medium">
+                        History
+                    </a>
+                    <a href="{{ url_for('profile') }}" class="text-gray-700 hover:text-highlight px-3 py-2 rounded-md text-sm font-medium">
+                        Profile
+                    </a>
+                    <a href="{{ url_for('logout') }}" class="ml-4 bg-accent text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-opacity-90">
+                        Logout
+                    </a>
+                {% else %}
+                    <a href="{{ url_for('login') }}" class="text-gray-700 hover:text-highlight px-3 py-2 rounded-md text-sm font-medium">
+                        Login
+                    </a>
+                    <a href="{{ url_for('register') }}" class="ml-4 bg-accent text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-opacity-90">
+                        Register
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</nav>
+{% endblock %} 

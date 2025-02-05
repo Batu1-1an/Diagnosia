@@ -1,0 +1,220 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="grid-pattern opacity-10"></div>
+
+<div class="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8 relative">
+    <div class="absolute inset-0 bg-gradient-radial from-highlight/5 to-transparent"></div>
+    <div class="max-w-4xl mx-auto relative">
+        <!-- Header -->
+        <div class="text-center mb-16 animate-fade-in">
+            <div class="inline-block animate-float mb-8 transform hover:scale-110 transition-transform duration-300">
+                <div class="relative">
+                    <i class="fas fa-radiation text-7xl text-accent opacity-90"></i>
+                    <div class="absolute inset-0 animate-ping-slow opacity-30">
+                        <i class="fas fa-radiation text-7xl text-highlight"></i>
+                    </div>
+                </div>
+            </div>
+            <h1 class="text-6xl font-extrabold text-primary mb-6 tracking-tight bg-gradient-to-r from-primary to-highlight bg-clip-text text-transparent">
+                Advanced Radiology Analysis
+            </h1>
+            <p class="text-xl text-gray-600 mb-8 max-w-2xl mx-auto leading-relaxed">
+                State-of-the-art AI analysis for all types of radiological imaging
+            </p>
+            <div class="flex flex-wrap justify-center gap-6 text-sm text-gray-500 max-w-3xl mx-auto">
+                <div class="glass-effect p-4 rounded-xl flex items-center space-x-3 transform hover:scale-105 transition-all duration-300 cursor-pointer group">
+                    <i class="fas fa-x-ray text-2xl text-highlight group-hover:text-accent transition-colors"></i>
+                    <span class="font-medium">X-rays</span>
+                </div>
+                <div class="glass-effect p-4 rounded-xl flex items-center space-x-3 transform hover:scale-105 transition-all duration-300 cursor-pointer group">
+                    <i class="fas fa-brain text-2xl text-highlight group-hover:text-accent transition-colors"></i>
+                    <span class="font-medium">CT Scans</span>
+                </div>
+                <div class="glass-effect p-4 rounded-xl flex items-center space-x-3 transform hover:scale-105 transition-all duration-300 cursor-pointer group">
+                    <i class="fas fa-magnet text-2xl text-highlight group-hover:text-accent transition-colors"></i>
+                    <span class="font-medium">MRI</span>
+                </div>
+                <div class="glass-effect p-4 rounded-xl flex items-center space-x-3 transform hover:scale-105 transition-all duration-300 cursor-pointer group">
+                    <i class="fas fa-wave-square text-2xl text-highlight group-hover:text-accent transition-colors"></i>
+                    <span class="font-medium">Ultrasound</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Upload Section -->
+        <div class="glass-effect rounded-3xl shadow-2xl p-10 animate-slide-up hover:shadow-highlight/20 transition-shadow duration-500">
+            <form id="radiologyForm" enctype="multipart/form-data" class="space-y-8">
+                <div class="border-3 border-dashed border-gray-300 rounded-2xl p-10 text-center hover:border-highlight transition-all duration-300 relative overflow-hidden group">
+                    <div class="absolute inset-0 bg-gradient-to-r from-highlight/5 to-accent/5 transform -skew-y-12 group-hover:skew-y-12 transition-transform duration-700"></div>
+                    <input type="file" id="xrayImage" name="image" accept="image/*" required class="hidden">
+                    <label for="xrayImage" class="cursor-pointer block relative">
+                        <div class="space-y-6">
+                            <div class="mx-auto h-24 w-24 text-gray-400 group-hover:text-highlight transition-colors duration-300">
+                                <i class="fas fa-cloud-upload-alt text-7xl transform group-hover:scale-110 transition-transform duration-300"></i>
+                            </div>
+                            <div class="text-lg text-gray-600">
+                                <span class="font-medium text-highlight hover:text-accent transition-colors duration-300">Upload your radiological image</span>
+                                <br>or drag and drop
+                            </div>
+                            <p class="text-sm text-gray-500">Supported formats: DICOM, PNG, JPG (up to 10MB)</p>
+                        </div>
+                    </label>
+                </div>
+
+                <div id="imagePreview" class="hidden space-y-6">
+                    <div class="relative rounded-2xl overflow-hidden shadow-xl">
+                        <img id="previewImg" src="" alt="Preview" class="max-w-full h-auto mx-auto transform hover:scale-105 transition-transform duration-500">
+                        <button type="button" id="removeImage" class="absolute top-4 right-4 bg-red-500 text-white p-3 rounded-full hover:bg-red-600 transform hover:scale-110 transition-all duration-300">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="text-center pt-4">
+                    <button type="submit" class="glow bg-gradient-to-r from-accent to-highlight hover:from-highlight hover:to-accent text-white px-12 py-5 rounded-xl text-lg font-semibold shadow-xl transition duration-300 flex items-center justify-center mx-auto space-x-4 group transform hover:scale-105">
+                        <i class="fas fa-microscope text-xl group-hover:animate-bounce"></i>
+                        <span>Analyze Image</span>
+                    </button>
+                </div>
+            </form>
+
+            <!-- Loading Spinner -->
+            <div id="loadingSpinner" class="hidden text-center py-16">
+                <div class="relative">
+                    <div class="inline-block animate-spin rounded-full h-16 w-16 border-4 border-highlight border-t-transparent"></div>
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <div class="h-8 w-8 rounded-full bg-highlight/20 animate-pulse"></div>
+                    </div>
+                </div>
+                <p class="mt-8 text-lg text-gray-600 animate-pulse">Processing your radiological image...</p>
+            </div>
+
+            <!-- Analysis Results -->
+            <div id="analysisResult" class="hidden mt-10">
+                <h3 class="text-3xl font-bold text-primary mb-6 flex items-center">
+                    <i class="fas fa-chart-line mr-4 text-highlight"></i>
+                    Analysis Results
+                </h3>
+                <div id="resultContent" class="prose max-w-none glass-effect p-8 rounded-2xl shadow-inner"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block scripts %}
+<script>
+    document.getElementById('radiologyForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData();
+        const imageFile = document.getElementById('xrayImage').files[0];
+        
+        // Validate file size
+        const maxSize = 10 * 1024 * 1024; // 10MB
+        if (imageFile.size > maxSize) {
+            showError('File size exceeds 10MB limit. Please choose a smaller file.');
+            return;
+        }
+        
+        // Validate file type
+        const validTypes = ['image/jpeg', 'image/png', 'image/gif'];
+        if (!validTypes.includes(imageFile.type)) {
+            showError('Invalid file type. Please upload a JPG, PNG, or GIF image.');
+            return;
+        }
+        
+        formData.append('image', imageFile);
+
+        // Show loading spinner
+        document.getElementById('loadingSpinner').classList.remove('hidden');
+        document.getElementById('analysisResult').classList.add('hidden');
+
+        try {
+            const response = await fetch('/analyze_radiology', {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.text();
+            
+            // Hide spinner
+            document.getElementById('loadingSpinner').classList.add('hidden');
+            
+            if (!response.ok) {
+                showError(result || 'Failed to analyze the image. Please try again.');
+                return;
+            }
+            
+            // Show results
+            document.getElementById('analysisResult').classList.remove('hidden');
+            document.getElementById('resultContent').innerHTML = result.replace(/\n/g, '<br>');
+            
+            // Scroll to results
+            document.getElementById('analysisResult').scrollIntoView({ behavior: 'smooth' });
+            
+        } catch (error) {
+            console.error('Error:', error);
+            showError('Network error occurred. Please check your connection and try again.');
+        }
+    });
+
+    function showError(message) {
+        document.getElementById('loadingSpinner').classList.add('hidden');
+        document.getElementById('analysisResult').classList.remove('hidden');
+        document.getElementById('resultContent').innerHTML = `
+            <div class="bg-red-50 border-l-4 border-red-500 p-4">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-exclamation-circle text-red-500"></i>
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-red-700">${message}</p>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    // Handle file input change
+    document.getElementById('xrayImage').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            // Clear previous results
+            document.getElementById('analysisResult').classList.add('hidden');
+            
+            // Validate file before preview
+            const maxSize = 10 * 1024 * 1024; // 10MB
+            const validTypes = ['image/jpeg', 'image/png', 'image/gif'];
+            
+            if (file.size > maxSize) {
+                showError('File size exceeds 10MB limit. Please choose a smaller file.');
+                this.value = '';
+                return;
+            }
+            
+            if (!validTypes.includes(file.type)) {
+                showError('Invalid file type. Please upload a JPG, PNG, or GIF image.');
+                this.value = '';
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('previewImg').src = e.target.result;
+                document.getElementById('imagePreview').classList.remove('hidden');
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // Handle remove image button
+    document.getElementById('removeImage').addEventListener('click', function() {
+        document.getElementById('xrayImage').value = '';
+        document.getElementById('imagePreview').classList.add('hidden');
+        document.getElementById('analysisResult').classList.add('hidden');
+    });
+</script>
+{% endblock %}
+
+{% endblock %}

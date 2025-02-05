@@ -1,0 +1,318 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="relative bg-primary text-white py-48 -mt-20 overflow-hidden perspective w-screen">
+    <!-- Sacred geometry patterns -->
+    <div class="absolute inset-0">
+        <div class="absolute inset-0 bg-[url('/static/grid.svg')] opacity-5 animate-pulse"></div>
+        <div class="absolute inset-0 bg-gradient-to-br from-primary/90 via-primary to-secondary"></div>
+        <!-- Sacred geometry overlays -->
+        <div class="absolute inset-0">
+            <!-- Flower of Life pattern -->
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1200px] h-[1200px] opacity-[0.03] animate-slow-spin">
+                <div class="absolute inset-0 border-[0.5px] border-highlight rounded-full"></div>
+                <div class="absolute inset-0 border-[0.5px] border-highlight rounded-full rotate-30"></div>
+                <div class="absolute inset-0 border-[0.5px] border-highlight rounded-full rotate-60"></div>
+                <div class="absolute inset-0 border-[0.5px] border-highlight rounded-full rotate-90"></div>
+                <div class="absolute inset-0 border-[0.5px] border-highlight rounded-full rotate-120"></div>
+                <div class="absolute inset-0 border-[0.5px] border-highlight rounded-full rotate-150"></div>
+            </div>
+        </div>
+        <!-- Divine light rays -->
+        <div class="absolute inset-0 overflow-hidden opacity-20">
+            <div class="absolute top-0 left-1/6 w-[1px] h-full bg-gradient-to-b from-transparent via-highlight to-transparent animate-divine-ray"></div>
+            <div class="absolute top-0 left-2/6 w-[1px] h-full bg-gradient-to-b from-transparent via-highlight to-transparent animate-divine-ray delay-200"></div>
+            <div class="absolute top-0 left-3/6 w-[1px] h-full bg-gradient-to-b from-transparent via-highlight to-transparent animate-divine-ray delay-400"></div>
+            <div class="absolute top-0 left-4/6 w-[1px] h-full bg-gradient-to-b from-transparent via-highlight to-transparent animate-divine-ray delay-600"></div>
+            <div class="absolute top-0 left-5/6 w-[1px] h-full bg-gradient-to-b from-transparent via-highlight to-transparent animate-divine-ray delay-800"></div>
+        </div>
+        <!-- Sacred circles -->
+        <div class="absolute inset-0 overflow-hidden">
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[1000px] border border-highlight/10 rounded-full animate-sacred-expand"></div>
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] border border-highlight/10 rounded-full animate-sacred-expand delay-300"></div>
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] border border-highlight/10 rounded-full animate-sacred-expand delay-600"></div>
+            <!-- Rotating circles -->
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[900px] animate-slow-spin-reverse">
+                <div class="absolute top-0 left-1/2 -translate-x-1/2 w-2 h-2 bg-highlight/20 rounded-full"></div>
+                <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-2 h-2 bg-highlight/20 rounded-full"></div>
+                <div class="absolute left-0 top-1/2 -translate-y-1/2 w-2 h-2 bg-highlight/20 rounded-full"></div>
+                <div class="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 bg-highlight/20 rounded-full"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Ethereal particles -->
+    <div class="absolute inset-0 overflow-hidden">
+        <div class="absolute top-20 left-10 w-[600px] h-[600px] bg-highlight/5 rounded-full blur-3xl animate-ethereal"></div>
+        <div class="absolute bottom-20 right-10 w-[600px] h-[600px] bg-accent/5 rounded-full blur-3xl animate-ethereal animation-delay-2000"></div>
+        <!-- Star field -->
+        <div class="absolute inset-0">
+            <div class="absolute w-1 h-1 bg-white/20 rounded-full top-[10%] left-[15%] animate-twinkle"></div>
+            <div class="absolute w-1 h-1 bg-white/20 rounded-full top-[20%] left-[45%] animate-twinkle delay-300"></div>
+            <div class="absolute w-1 h-1 bg-white/20 rounded-full top-[15%] left-[75%] animate-twinkle delay-500"></div>
+            <div class="absolute w-1 h-1 bg-white/20 rounded-full top-[45%] left-[25%] animate-twinkle delay-700"></div>
+            <div class="absolute w-1 h-1 bg-white/20 rounded-full top-[65%] left-[85%] animate-twinkle delay-100"></div>
+            <div class="absolute w-1 h-1 bg-white/20 rounded-full top-[75%] left-[35%] animate-twinkle delay-400"></div>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+        <div class="text-center">
+            <div class="inline-block transform hover:scale-105 transition-transform duration-500">
+                <span class="inline-flex items-center px-8 py-3 rounded-full text-sm font-medium bg-accent/5 text-accent backdrop-blur-sm border border-accent/10 mb-12 hover:bg-accent/10 transition-all group">
+                    <span class="w-2 h-2 bg-accent rounded-full mr-3 animate-pulse"></span>
+                    <span class="tracking-widest uppercase">AI-Powered Healthcare Platform</span>
+                    <span class="absolute inset-0 rounded-full bg-accent/5 group-hover:animate-divine-pulse"></span>
+                </span>
+            </div>
+            <h1 class="text-5xl md:text-7xl font-black mb-10 animate-fade-in tracking-tight leading-none perspective-text divine-text">
+                Advanced Healthcare
+                <span class="block text-highlight mt-6 bg-clip-text text-transparent bg-gradient-to-r from-highlight via-light to-highlight bg-[length:300%_300%] animate-gradient celestial-glow">Powered by AI</span>
+            </h1>
+            <p class="text-lg md:text-xl mb-20 animate-slide-up max-w-2xl mx-auto leading-relaxed text-gray-200/90 font-light tracking-wide">
+                Experience next-generation health insights and personalized recommendations using our cutting-edge AI technology.
+            </p>
+            <div class="space-x-8">
+                {% if 'user_id' in session %}
+                <a href="{{ url_for('diagnosis') }}" class="group bg-accent/90 text-white font-bold py-5 px-16 rounded-2xl text-base transition-all duration-500 inline-flex items-center hover:shadow-2xl hover:-translate-y-1 backdrop-blur-sm relative overflow-hidden">
+                    <span class="relative z-10 tracking-widest uppercase">Start Diagnosis</span>
+                    <svg class="w-5 h-5 ml-3 transform group-hover:translate-x-1 transition-transform relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+                    <div class="absolute inset-0 bg-gradient-to-r from-accent/80 via-red-600/80 to-accent/80 bg-[length:200%_100%] group-hover:animate-shimmer"></div>
+                    <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-[radial-gradient(circle_at_center,_rgba(255,255,255,0.3),_transparent_50%)]"></div>
+                </a>
+                {% else %}
+                <a href="{{ url_for('register') }}" class="group bg-accent/90 text-white font-bold py-5 px-16 rounded-2xl text-base transition-all duration-500 inline-flex items-center hover:shadow-2xl hover:-translate-y-1 backdrop-blur-sm relative overflow-hidden">
+                    <span class="relative z-10 tracking-widest uppercase">Begin Your Journey</span>
+                    <svg class="w-5 h-5 ml-3 transform group-hover:translate-x-1 transition-transform relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+                    <div class="absolute inset-0 bg-gradient-to-r from-accent/80 via-red-600/80 to-accent/80 bg-[length:200%_100%] group-hover:animate-shimmer"></div>
+                    <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-[radial-gradient(circle_at_center,_rgba(255,255,255,0.3),_transparent_50%)]"></div>
+                </a>
+                <a href="{{ url_for('about') }}" class="text-white/80 hover:text-white font-medium py-5 px-10 rounded-2xl text-base transition-all duration-500 inline-flex items-center hover:-translate-y-1 relative group">
+                    <span class="relative z-10 tracking-widest uppercase">Discover More</span>
+                    <svg class="w-5 h-5 ml-3 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                    <div class="absolute inset-0 bg-white/0 group-hover:bg-white/5 rounded-2xl transition-all duration-500"></div>
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Features Section -->
+<div class="py-40 bg-gradient-to-b from-white to-gray-50 relative w-screen">
+    <div class="absolute inset-0 bg-[url('/static/grid.svg')] opacity-[0.02]"></div>
+    <!-- Sacred geometry background -->
+    <div class="absolute inset-0">
+        <!-- Metatron's Cube -->
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1200px] h-[1200px] opacity-[0.02] animate-slow-spin-reverse">
+            <div class="absolute inset-0 border-[0.5px] border-primary rounded-full"></div>
+            <div class="absolute inset-0 border-[0.5px] border-primary rounded-full rotate-30"></div>
+            <div class="absolute inset-0 border-[0.5px] border-primary rounded-full rotate-60"></div>
+            <div class="absolute h-full w-[0.5px] left-1/2 -translate-x-1/2 bg-primary"></div>
+            <div class="absolute h-full w-[0.5px] left-1/2 -translate-x-1/2 bg-primary rotate-60"></div>
+            <div class="absolute h-full w-[0.5px] left-1/2 -translate-x-1/2 bg-primary rotate-120"></div>
+        </div>
+    </div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+        <div class="text-center mb-32">
+            <span class="inline-flex items-center px-8 py-3 rounded-full text-sm font-medium bg-primary/5 text-primary mb-10 hover:bg-primary/10 transition-all transform hover:scale-105 group">
+                <span class="w-1.5 h-1.5 bg-primary rounded-full mr-3"></span>
+                <span class="tracking-widest uppercase">Why Choose Diagnosia</span>
+                <span class="absolute inset-0 rounded-full bg-primary/5 group-hover:animate-divine-pulse"></span>
+            </span>
+            <h2 class="text-4xl md:text-5xl font-bold text-primary mb-10 tracking-tight divine-text">A Better Way to Monitor Your Health</h2>
+            <p class="text-lg text-gray-600/90 max-w-2xl mx-auto font-light tracking-wide">Experience healthcare powered by advanced artificial intelligence, designed to provide accurate and timely insights.</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+            <!-- Feature 1 -->
+            <div class="glass-effect p-10 rounded-2xl hover-scale group backdrop-blur-sm transform perspective hover:rotate-y-3 hover:translate-z-12 transition-all duration-700">
+                <div class="bg-accent/5 w-20 h-20 rounded-xl flex items-center justify-center mb-8 group-hover:bg-accent/10 transition-all duration-700 relative transform group-hover:rotate-y-12">
+                    <div class="absolute inset-0 bg-gradient-to-br from-accent/10 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                    <i class="fas fa-brain text-accent text-3xl relative z-10 transform transition-transform group-hover:scale-110"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-primary mb-4 group-hover:text-accent transition-colors tracking-wide">AI-Powered Analysis</h3>
+                <p class="text-gray-600/90 leading-relaxed text-base">Advanced algorithms process your symptoms and provide accurate health insights in real-time.</p>
+            </div>
+
+            <!-- Feature 2 -->
+            <div class="glass-effect p-10 rounded-2xl hover-scale group backdrop-blur-sm transform perspective hover:rotate-y-3 hover:translate-z-12 transition-all duration-700">
+                <div class="bg-accent/5 w-20 h-20 rounded-xl flex items-center justify-center mb-8 group-hover:bg-accent/10 transition-all duration-700 relative transform group-hover:rotate-y-12">
+                    <div class="absolute inset-0 bg-gradient-to-br from-accent/10 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                    <i class="fas fa-shield-alt text-accent text-3xl relative z-10 transform transition-transform group-hover:scale-110"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-primary mb-4 group-hover:text-accent transition-colors tracking-wide">Secure & Private</h3>
+                <p class="text-gray-600/90 leading-relaxed text-base">Your health data is protected with enterprise-grade security and encryption.</p>
+            </div>
+
+            <!-- Feature 3 -->
+            <div class="glass-effect p-10 rounded-2xl hover-scale group backdrop-blur-sm transform perspective hover:rotate-y-3 hover:translate-z-12 transition-all duration-700">
+                <div class="bg-accent/5 w-20 h-20 rounded-xl flex items-center justify-center mb-8 group-hover:bg-accent/10 transition-all duration-700 relative transform group-hover:rotate-y-12">
+                    <div class="absolute inset-0 bg-gradient-to-br from-accent/10 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                    <i class="fas fa-chart-line text-accent text-3xl relative z-10 transform transition-transform group-hover:scale-110"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-primary mb-4 group-hover:text-accent transition-colors tracking-wide">Health Tracking</h3>
+                <p class="text-gray-600/90 leading-relaxed text-base">Monitor your health progress and access your diagnosis history anytime.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CTA Section -->
+<div class="bg-secondary py-40 relative overflow-hidden w-screen">
+    <div class="absolute inset-0">
+        <!-- Previous background elements -->
+        <div class="absolute inset-0 bg-[url('/static/dots.svg')] opacity-5 animate-pulse"></div>
+        <div class="absolute inset-0 bg-gradient-to-br from-secondary/95 via-secondary to-primary"></div>
+        <!-- Sacred geometry overlay -->
+        <div class="absolute inset-0">
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[1000px] border border-white/5 rounded-full animate-slow-spin"></div>
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] border border-white/5 rounded-full animate-slow-spin-reverse"></div>
+            <!-- Star field -->
+            <div class="absolute inset-0">
+                <div class="absolute w-1 h-1 bg-white/20 rounded-full top-[20%] left-[25%] animate-twinkle"></div>
+                <div class="absolute w-1 h-1 bg-white/20 rounded-full top-[30%] left-[55%] animate-twinkle delay-300"></div>
+                <div class="absolute w-1 h-1 bg-white/20 rounded-full top-[25%] left-[85%] animate-twinkle delay-500"></div>
+                <div class="absolute w-1 h-1 bg-white/20 rounded-full top-[55%] left-[35%] animate-twinkle delay-700"></div>
+                <div class="absolute w-1 h-1 bg-white/20 rounded-full top-[75%] left-[75%] animate-twinkle delay-100"></div>
+            </div>
+        </div>
+        <!-- Divine rays -->
+        <div class="absolute inset-0 overflow-hidden opacity-10">
+            <div class="absolute h-full w-[1px] left-1/6 bg-gradient-to-b from-transparent via-white to-transparent animate-divine-ray"></div>
+            <div class="absolute h-full w-[1px] left-2/6 bg-gradient-to-b from-transparent via-white to-transparent animate-divine-ray delay-200"></div>
+            <div class="absolute h-full w-[1px] left-3/6 bg-gradient-to-b from-transparent via-white to-transparent animate-divine-ray delay-400"></div>
+            <div class="absolute h-full w-[1px] left-4/6 bg-gradient-to-b from-transparent via-white to-transparent animate-divine-ray delay-600"></div>
+            <div class="absolute h-full w-[1px] left-5/6 bg-gradient-to-b from-transparent via-white to-transparent animate-divine-ray delay-800"></div>
+        </div>
+    </div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+        <div class="text-center text-white">
+            <span class="inline-flex items-center px-6 py-2 rounded-full text-sm font-medium bg-white/5 text-white backdrop-blur-sm border border-white/10 mb-10 hover:bg-white/10 transition-all transform hover:scale-105 group">
+                <span class="w-1.5 h-1.5 bg-white rounded-full mr-2"></span>
+                <span class="tracking-wider">Join Our Community</span>
+                <span class="absolute inset-0 rounded-full bg-white/5 group-hover:animate-divine-pulse"></span>
+            </span>
+            <h2 class="text-3xl md:text-4xl font-bold mb-8 tracking-tight divine-glow-white">Ready to Take Control of Your Health?</h2>
+            <p class="text-lg mb-16 max-w-2xl mx-auto text-gray-200/90 font-light tracking-wide">Join thousands of users who trust Diagnosia for their health monitoring needs.</p>
+            {% if 'user_id' in session %}
+            <a href="{{ url_for('diagnosis') }}" class="group bg-accent/90 text-white font-bold py-4 px-12 rounded-xl text-base transition-all duration-500 inline-flex items-center hover:shadow-2xl hover:-translate-y-1 backdrop-blur-sm relative overflow-hidden">
+                <span class="relative z-10 tracking-wider">Start Your Diagnosis</span>
+                <svg class="w-4 h-4 ml-2 transform group-hover:translate-x-1 transition-transform relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+                <div class="absolute inset-0 bg-gradient-to-r from-accent/80 via-red-600/80 to-accent/80 bg-[length:200%_100%] group-hover:animate-shimmer"></div>
+                <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-[radial-gradient(circle_at_center,_rgba(255,255,255,0.2),_transparent_50%)]"></div>
+            </a>
+            {% else %}
+            <a href="{{ url_for('register') }}" class="group bg-accent/90 text-white font-bold py-4 px-12 rounded-xl text-base transition-all duration-500 inline-flex items-center hover:shadow-2xl hover:-translate-y-1 backdrop-blur-sm relative overflow-hidden">
+                <span class="relative z-10 tracking-wider">Begin Your Journey</span>
+                <svg class="w-4 h-4 ml-2 transform group-hover:translate-x-1 transition-transform relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+                <div class="absolute inset-0 bg-gradient-to-r from-accent/80 via-red-600/80 to-accent/80 bg-[length:200%_100%] group-hover:animate-shimmer"></div>
+                <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-[radial-gradient(circle_at_center,_rgba(255,255,255,0.2),_transparent_50%)]"></div>
+            </a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600&display=swap');
+    
+    .perspective {
+        perspective: 3000px;
+    }
+    .perspective-text {
+        transform: translateZ(150px);
+    }
+    .divine-text {
+        font-family: 'Cinzel', serif;
+    }
+    .celestial-glow {
+        text-shadow: 0 0 40px rgba(15,164,175,0.6),
+                     0 0 80px rgba(15,164,175,0.3),
+                     0 0 120px rgba(15,164,175,0.1);
+    }
+    .divine-glow-white {
+        text-shadow: 0 0 40px rgba(255,255,255,0.4),
+                     0 0 80px rgba(255,255,255,0.2),
+                     0 0 120px rgba(255,255,255,0.1);
+    }
+    .animate-ethereal {
+        animation: ethereal 30s ease-in-out infinite;
+    }
+    .animate-sacred-expand {
+        animation: sacredExpand 6s ease-in-out infinite;
+    }
+    .animate-divine-ray {
+        animation: divineRay 10s ease-in-out infinite;
+    }
+    .animate-divine-pulse {
+        animation: divinePulse 3s ease-in-out infinite;
+    }
+    .animate-slow-spin {
+        animation: slowSpin 30s linear infinite;
+    }
+    .animate-slow-spin-reverse {
+        animation: slowSpinReverse 40s linear infinite;
+    }
+    .animate-twinkle {
+        animation: twinkle 4s ease-in-out infinite;
+    }
+    @keyframes ethereal {
+        0%, 100% {
+            transform: translate(0, 0) scale(1) rotate(0deg);
+            opacity: 0.3;
+        }
+        33% {
+            transform: translate(100px, -60px) scale(1.4) rotate(180deg);
+            opacity: 0.6;
+        }
+        66% {
+            transform: translate(-60px, 100px) scale(0.8) rotate(360deg);
+            opacity: 0.2;
+        }
+    }
+    @keyframes sacredExpand {
+        0%, 100% {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 0.05;
+        }
+        50% {
+            transform: translate(-50%, -50%) scale(1.2);
+            opacity: 0.15;
+        }
+    }
+    @keyframes slowSpin {
+        from { transform: translate(-50%, -50%) rotate(0deg); }
+        to { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+    @keyframes slowSpinReverse {
+        from { transform: translate(-50%, -50%) rotate(360deg); }
+        to { transform: translate(-50%, -50%) rotate(0deg); }
+    }
+    @keyframes twinkle {
+        0%, 100% { opacity: 0.2; transform: scale(1); }
+        50% { opacity: 0.8; transform: scale(1.5); }
+    }
+    .glass-effect {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    .hover-scale {
+        transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .hover-scale:hover {
+        transform: scale(1.02) translateY(-5px);
+    }
+    body {
+        overflow-x: hidden; /* Prevent horizontal scrolling */
+    }
+    .w-screen {
+        width: 100vw;
+        margin-left: calc(-50vw + 50%);
+        margin-right: calc(-50vw + 50%);
+    }
+</style>
+{% endblock %}
+

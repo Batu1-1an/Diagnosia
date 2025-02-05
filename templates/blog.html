@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Blog - Diagnosia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#003135',
+                        secondary: '#024950',
+                        accent: '#964734',
+                        highlight: '#0FA4AF',
+                        light: '#AFDDE5',
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-out',
+                        'slide-up': 'slideUp 0.5s ease-out',
+                        'slide-in-right': 'slideInRight 0.5s ease-out',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        },
+                        slideInRight: {
+                            '0%': { transform: 'translateX(20px)', opacity: '0' },
+                            '100%': { transform: 'translateX(0)', opacity: '1' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(to bottom, #f8fafc, #f1f5f9);
+            min-height: 100vh;
+        }
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .hover-scale {
+            transition: transform 0.2s;
+        }
+        .hover-scale:hover {
+            transform: scale(1.02);
+        }
+        .blog-card {
+            transition: all 0.3s ease;
+        }
+        .blog-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .blog-image {
+            transition: all 0.5s ease;
+        }
+        .blog-card:hover .blog-image {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="bg-primary">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <img class="h-12 w-12 rounded-full" src="{{ url_for('static', filename='img.png') }}" alt="Diagnosia">
+                    </div>
+                    <div class="hidden md:block">
+                        <div class="ml-10 flex items-baseline space-x-4">
+                            <a href="/" class="text-gray-300 hover:bg-secondary hover:text-light px-3 py-2 rounded-md text-sm font-medium">Home</a>
+                            <a href="/about" class="text-gray-300 hover:bg-secondary hover:text-light px-3 py-2 rounded-md text-sm font-medium">About</a>
+                            <a href="/contact" class="text-gray-300 hover:bg-secondary hover:text-light px-3 py-2 rounded-md text-sm font-medium">Contact</a>
+                            <a href="/blog" class="text-light hover:bg-secondary px-3 py-2 rounded-md text-sm font-medium">Blog</a>
+                            <a href="/history" class="text-gray-300 hover:bg-secondary hover:text-light px-3 py-2 rounded-md text-sm font-medium">View History</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-4 flex items-center md:ml-6">
+                        <button class="bg-accent hover:bg-opacity-90 text-white px-4 py-2 rounded-md text-sm font-medium">
+                            <a href="/diagnosis">Get Started</a>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="bg-primary py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center animate-fade-in">
+                <h1 class="text-4xl font-extrabold text-light sm:text-5xl md:text-6xl">
+                    Health & Wellness Blog
+                </h1>
+                <p class="mt-3 max-w-md mx-auto text-gray-300 sm:text-lg md:mt-5 md:text-xl md:max-w-3xl">
+                    Stay informed with the latest insights in healthcare and wellness
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Featured Post -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-12">
+        <div class="glass-effect rounded-xl overflow-hidden shadow-xl animate-slide-up hover-scale">
+            <div class="md:flex">
+                <div class="md:flex-shrink-0">
+                    <img class="h-full w-full object-cover md:w-96" src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80" alt="Featured post">
+                </div>
+                <div class="p-8">
+                    <div class="flex items-center">
+                        <div class="bg-accent bg-opacity-10 px-3 py-1 rounded-full">
+                            <span class="text-sm font-medium text-accent">Featured</span>
+                        </div>
+                        <div class="ml-4 text-sm text-gray-500">
+                            <i class="fas fa-calendar-alt mr-2"></i>
+                            January 13, 2024
+                        </div>
+                    </div>
+                    <a href="#" class="block mt-4">
+                        <h2 class="text-2xl font-bold text-primary">The Future of AI in Healthcare</h2>
+                        <p class="mt-3 text-gray-600">
+                            Explore how artificial intelligence is transforming healthcare delivery and improving patient outcomes through innovative technologies and approaches.
+                        </p>
+                    </a>
+                    <div class="mt-6">
+                        <a href="#" class="inline-flex items-center text-accent hover:text-opacity-80 transition-colors duration-200">
+                            Read more
+                            <i class="fas fa-arrow-right ml-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Blog Posts Grid -->
+    <div class="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
+        <div class="grid gap-8 lg:grid-cols-3">
+            <!-- Blog Post 1 -->
+            <div class="blog-card glass-effect rounded-xl overflow-hidden animate-slide-up" style="animation-delay: 0.2s;">
+                <div class="relative overflow-hidden">
+                    <img class="h-48 w-full object-cover blog-image" src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80" alt="">
+                    <div class="absolute top-0 right-0 m-4">
+                        <div class="bg-accent bg-opacity-90 px-3 py-1 rounded-full">
+                            <span class="text-sm font-medium text-white">Healthcare</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <div class="flex items-center text-sm text-gray-500 mb-4">
+                        <i class="fas fa-calendar-alt mr-2"></i>
+                        January 12, 2024
+                    </div>
+                    <a href="#" class="block">
+                        <h3 class="text-xl font-bold text-primary mb-3">Understanding AI in Modern Healthcare</h3>
+                        <p class="text-gray-600">
+                            Discover how artificial intelligence is revolutionizing the healthcare industry and improving patient outcomes.
+                        </p>
+                    </a>
+                    <div class="mt-6">
+                        <a href="#" class="inline-flex items-center text-accent hover:text-opacity-80 transition-colors duration-200">
+                            Read more
+                            <i class="fas fa-arrow-right ml-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Blog Post 2 -->
+            <div class="blog-card glass-effect rounded-xl overflow-hidden animate-slide-up" style="animation-delay: 0.4s;">
+                <div class="relative overflow-hidden">
+                    <img class="h-48 w-full object-cover blog-image" src="https://images.unsplash.com/photo-1498837167922-ddd27525d352?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80" alt="">
+                    <div class="absolute top-0 right-0 m-4">
+                        <div class="bg-accent bg-opacity-90 px-3 py-1 rounded-full">
+                            <span class="text-sm font-medium text-white">Wellness</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <div class="flex items-center text-sm text-gray-500 mb-4">
+                        <i class="fas fa-calendar-alt mr-2"></i>
+                        January 10, 2024
+                    </div>
+                    <a href="#" class="block">
+                        <h3 class="text-xl font-bold text-primary mb-3">The Importance of Preventive Healthcare</h3>
+                        <p class="text-gray-600">
+                            Learn why preventive healthcare is crucial and how it can help you maintain optimal health.
+                        </p>
+                    </a>
+                    <div class="mt-6">
+                        <a href="#" class="inline-flex items-center text-accent hover:text-opacity-80 transition-colors duration-200">
+                            Read more
+                            <i class="fas fa-arrow-right ml-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Blog Post 3 -->
+            <div class="blog-card glass-effect rounded-xl overflow-hidden animate-slide-up" style="animation-delay: 0.6s;">
+                <div class="relative overflow-hidden">
+                    <img class="h-48 w-full object-cover blog-image" src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80" alt="">
+                    <div class="absolute top-0 right-0 m-4">
+                        <div class="bg-accent bg-opacity-90 px-3 py-1 rounded-full">
+                            <span class="text-sm font-medium text-white">Nutrition</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <div class="flex items-center text-sm text-gray-500 mb-4">
+                        <i class="fas fa-calendar-alt mr-2"></i>
+                        January 8, 2024
+                    </div>
+                    <a href="#" class="block">
+                        <h3 class="text-xl font-bold text-primary mb-3">Nutrition Tips for Better Health</h3>
+                        <p class="text-gray-600">
+                            Expert advice on maintaining a balanced diet and making healthy food choices.
+                        </p>
+                    </a>
+                    <div class="mt-6">
+                        <a href="#" class="inline-flex items-center text-accent hover:text-opacity-80 transition-colors duration-200">
+                            Read more
+                            <i class="fas fa-arrow-right ml-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Newsletter Section -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16">
+        <div class="glass-effect rounded-xl p-8 md:p-12 animate-slide-up hover-scale" style="animation-delay: 0.8s;">
+            <div class="md:flex md:items-center md:justify-between">
+                <div class="md:w-0 md:flex-1">
+                    <div class="flex items-center mb-6">
+                        <div class="bg-accent bg-opacity-10 p-3 rounded-full mr-4">
+                            <i class="fas fa-envelope text-accent text-2xl"></i>
+                        </div>
+                        <h2 class="text-2xl font-extrabold text-primary">
+                            Subscribe to Our Newsletter
+                        </h2>
+                    </div>
+                    <p class="text-lg text-gray-600 mb-6 md:mb-0">
+                        Get the latest health insights and updates delivered to your inbox
+                    </p>
+                </div>
+                <div class="md:ml-8 md:w-96">
+                    <form class="flex flex-col sm:flex-row gap-4">
+                        <input type="email" placeholder="Enter your email" 
+                            class="flex-1 px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-highlight focus:border-highlight transition-all duration-200">
+                        <button type="submit" 
+                            class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-lg shadow-md text-white bg-accent hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent transition-all duration-200">
+                            <i class="fas fa-paper-plane mr-2"></i>
+                            Subscribe
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-primary py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center text-gray-300">
+                <p>&copy; 2024 Diagnosia. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

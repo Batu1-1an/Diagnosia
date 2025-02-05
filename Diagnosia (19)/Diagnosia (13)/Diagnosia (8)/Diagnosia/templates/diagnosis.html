@@ -1,0 +1,635 @@
+{% extends "base.html" %}
+
+{% block title %}Diagnosia - AI Health Analysis{% endblock %}
+
+{% block styles %}
+<style>
+    .glass-effect {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .symptom-tag {
+        background: rgba(196, 164, 132, 0.2);
+        border: 1px solid rgba(196, 164, 132, 0.4);
+        color: #000000;
+        padding: 0.75rem 1rem;
+        border-radius: 0.75rem;
+        display: inline-flex;
+        align-items: center;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(4px);
+    }
+
+    .symptom-tag:hover {
+        background: rgba(196, 164, 132, 0.3);
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(196, 164, 132, 0.3);
+    }
+
+    .symptom-tag .remove-btn {
+        margin-left: 0.5rem;
+        opacity: 0.7;
+        cursor: pointer;
+    }
+
+    .symptom-tag .remove-btn:hover {
+        opacity: 1;
+    }
+
+    .search-container {
+        position: relative;
+    }
+
+    .search-results {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: rgba(26, 26, 46, 0.95);
+        border: 1px solid rgba(196, 164, 132, 0.3);
+        border-radius: 0.75rem;
+        max-height: 240px;
+        overflow-y: auto;
+        z-index: 50;
+        display: none;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .search-result-item {
+        padding: 0.75rem 1rem;
+        cursor: pointer;
+        color: #e2d4ba;
+        transition: all 0.2s ease;
+        border-bottom: 1px solid rgba(196, 164, 132, 0.1);
+        display: flex;
+        align-items: center;
+    }
+
+    .search-result-item:last-child {
+        border-bottom: none;
+    }
+
+    .search-result-item:hover {
+        background: rgba(196, 164, 132, 0.2);
+        padding-left: 1.5rem;
+    }
+
+    .search-result-item::before {
+        content: '+';
+        margin-right: 0.5rem;
+        opacity: 0.6;
+    }
+
+    /* Custom Scrollbar */
+    .scrollbar-thin::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .scrollbar-thin::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .scrollbar-thin::-webkit-scrollbar-thumb {
+        background: rgba(196, 164, 132, 0.3);
+        border-radius: 3px;
+    }
+
+    .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+        background: rgba(196, 164, 132, 0.5);
+    }
+
+    /* Loading and Success Styles */
+    .loading-overlay {
+        background: rgba(26, 26, 46, 0.9);
+        backdrop-filter: blur(8px);
+    }
+
+    .success-popup {
+        background: rgba(34, 197, 94, 0.9);
+        backdrop-filter: blur(8px);
+        box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+    }
+
+    @keyframes slideIn {
+        from {
+            transform: translateX(100%) translateY(-50%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0) translateY(-50%);
+            opacity: 1;
+        }
+    }
+
+    .loading-spinner {
+        border: 4px solid rgba(196, 164, 132, 0.3);
+        border-top: 4px solid #c4a484;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    .doctor-select {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(196, 164, 132, 0.3);
+        color: #e2d4ba;
+        padding: 0.75rem;
+        border-radius: 0.5rem;
+        width: 100%;
+        margin-top: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .doctor-select:focus {
+        outline: none;
+        border-color: #c4a484;
+        box-shadow: 0 0 0 2px rgba(196, 164, 132, 0.2);
+    }
+
+    .doctor-select option {
+        background: #1a1a2e;
+        color: #e2d4ba;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Loading Overlay -->
+<div id="loadingOverlay" class="loading-overlay flex items-center justify-center">
+    <div class="text-center">
+        <div class="loading-spinner mx-auto mb-4"></div>
+        <p class="text-light text-lg">Analyzing your symptoms...</p>
+    </div>
+</div>
+
+<!-- Success Popup -->
+<div id="successPopup" class="success-popup">
+    <div class="flex items-center">
+        <i class="fas fa-check-circle mr-2"></i>
+        <span>Analysis completed successfully!</span>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-4xl mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-12 animate-fade-in">
+            <h1 class="text-4xl font-extrabold text-light mb-4">
+                AI-Powered Health Analysis
+            </h1>
+            <p class="text-lg text-gray-400">
+                Get instant insights about your health condition using our advanced AI system
+            </p>
+        </div>
+
+        <!-- Dr.AI Chat Button -->
+        <div class="flex justify-center mb-8">
+            <a href="{{ url_for('drai_chat') }}" class="bg-accent hover:bg-opacity-90 text-white p-6 rounded-xl shadow-lg transition-transform hover:scale-105 flex items-center gap-3">
+                <img src="{{ url_for('static', filename='doctor-ai.png') }}" alt="Dr.AI" class="w-12 h-12 rounded-full">
+                <div class="text-left">
+                    <h3 class="font-semibold text-xl">Talk to Dr.AI</h3>
+                    <p class="text-sm text-gray-100">Your personal medical assistant</p>
+                </div>
+            </a>
+        </div>
+
+        <!-- Symptom Input Section -->
+        <div class="glass-effect rounded-xl p-8 shadow-xl mb-8 animate-slide-up border border-gray-700">
+            <form id="symptomForm" action="{{ url_for('diagnosis') }}" method="POST">
+                <div class="space-y-6">
+                    <div class="flex items-center space-x-2 mb-6">
+                        <i class="fas fa-notes-medical text-2xl text-accent"></i>
+                        <h2 class="text-2xl font-bold text-light">Enter Your Symptoms</h2>
+                    </div>
+
+                    <!-- Search Input -->
+                    <div class="search-container">
+                        <div class="relative">
+                            <input type="text" id="symptomsInput" 
+                                class="w-full p-4 bg-opacity-10 bg-white border-2 border-gray-700 rounded-xl focus:ring-2 focus:ring-accent focus:border-accent text-light text-lg placeholder-gray-500"
+                                placeholder="Search symptoms...">
+                            <i class="fas fa-search absolute right-4 top-1/2 transform -translate-y-1/2 text-accent text-xl"></i>
+                        </div>
+                        <div id="searchResults" class="search-results mt-2 rounded-xl border border-gray-700 bg-opacity-95 backdrop-blur-md"></div>
+                    </div>
+
+                    <!-- Available Symptoms Section -->
+                    <div class="mt-8">
+                        <div class="flex items-center space-x-2 mb-4">
+                            <i class="fas fa-list-ul text-xl text-accent"></i>
+                            <h3 class="text-xl font-semibold text-light">Available Symptoms</h3>
+                        </div>
+                        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 max-h-64 overflow-y-auto p-4 bg-opacity-5 bg-white rounded-xl border border-gray-700 scrollbar-thin scrollbar-thumb-accent scrollbar-track-transparent">
+                            {% for symptom in symptoms %}
+                            <div class="symptom-option cursor-pointer p-3 rounded-lg hover:bg-accent hover:bg-opacity-20 transition-all duration-300 border border-gray-700 group"
+                                 onclick="addSymptom('{{ symptom }}')">
+                                <span class="text-black text-sm group-hover:text-black transition-colors">{{ symptom | replace('_', ' ') | title }}</span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Selected Symptoms Display -->
+                    <div class="mt-8">
+                        <div class="flex items-center space-x-2 mb-4">
+                            <i class="fas fa-check-circle text-xl text-accent"></i>
+                            <h3 class="text-xl font-semibold text-light">Selected Symptoms</h3>
+                        </div>
+                        <div id="selectedSymptoms" class="min-h-[100px] p-4 bg-opacity-5 bg-white rounded-xl border border-gray-700 flex flex-wrap gap-3"></div>
+                        <input type="hidden" id="symptomsHidden" name="symptoms">
+                    </div>
+
+                    <!-- Analyze Button -->
+                    <div class="text-center mt-8">
+                        <button type="submit" 
+                                class="bg-accent hover:bg-opacity-90 text-white px-10 py-4 rounded-xl text-lg font-semibold shadow-lg transition duration-300 transform hover:scale-105 flex items-center justify-center mx-auto space-x-3">
+                            <i class="fas fa-stethoscope text-xl"></i>
+                            <span>Analyze Symptoms</span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Results Section -->
+        {% if predicted_disease %}
+        <div class="space-y-8 animate-slide-up">
+            <!-- Primary Result Card -->
+            <div class="result-card p-8">
+                <h2 class="text-3xl font-bold text-light mb-8 flex items-center">
+                    <i class="fas fa-clipboard-check text-accent mr-3"></i>
+                    Analysis Results
+                </h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Left Column -->
+                    <div class="space-y-6">
+                        <div class="bg-opacity-10 bg-white p-6 rounded-lg">
+                            <h3 class="text-xl font-semibold text-light mb-3 flex items-center">
+                                <i class="fas fa-heartbeat text-accent mr-2"></i>
+                                Predicted Condition
+                            </h3>
+                            <p class="text-lg text-light">{{ predicted_disease }}</p>
+                        </div>
+
+                        <div class="bg-opacity-10 bg-white p-6 rounded-lg">
+                            <h3 class="text-xl font-semibold text-light mb-3 flex items-center">
+                                <i class="fas fa-info-circle text-accent mr-2"></i>
+                                Description
+                            </h3>
+                            <p class="text-gray-300 leading-relaxed">{{ dis_des }}</p>
+                        </div>
+
+                        <div class="bg-opacity-10 bg-white p-6 rounded-lg">
+                            <h3 class="text-xl font-semibold text-light mb-3 flex items-center">
+                                <i class="fas fa-shield-alt text-accent mr-2"></i>
+                                Precautions
+                            </h3>
+                            <ul class="space-y-2">
+                                {% for precaution in my_precautions %}
+                                <li class="flex items-start">
+                                    <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                                    <span class="text-gray-300">{{ precaution }}</span>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Right Column -->
+                    <div class="space-y-6">
+                        <div class="bg-opacity-10 bg-white p-6 rounded-lg">
+                            <h3 class="text-xl font-semibold text-light mb-3 flex items-center">
+                                <i class="fas fa-pills text-accent mr-2"></i>
+                                Recommended Medications
+                            </h3>
+                            <ul class="space-y-2">
+                                {% for medication in medications %}
+                                <li class="flex items-start">
+                                    <i class="fas fa-prescription-bottle-alt text-blue-500 mt-1 mr-2"></i>
+                                    <span class="text-gray-300">{{ medication }}</span>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+
+                        <div class="bg-opacity-10 bg-white p-6 rounded-lg">
+                            <h3 class="text-xl font-semibold text-light mb-3 flex items-center">
+                                <i class="fas fa-utensils text-accent mr-2"></i>
+                                Recommended Diet
+                            </h3>
+                            <ul class="space-y-2">
+                                {% for diet in my_diet %}
+                                <li class="flex items-start">
+                                    <i class="fas fa-carrot text-orange-500 mt-1 mr-2"></i>
+                                    <span class="text-gray-300">{{ diet }}</span>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+
+                        <div class="bg-opacity-10 bg-white p-6 rounded-lg">
+                            <h3 class="text-xl font-semibold text-light mb-3 flex items-center">
+                                <i class="fas fa-running text-accent mr-2"></i>
+                                Recommended Exercises
+                            </h3>
+                            <p class="text-gray-300 leading-relaxed">{{ workout }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Doctor Review Section -->
+                <div class="mt-8 p-6 bg-opacity-10 bg-white rounded-lg">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-semibold text-light flex items-center">
+                            <i class="fas fa-user-md text-accent mr-2"></i>
+                            Professional Review
+                        </h3>
+                    </div>
+
+                    {% if not diagnosis_id or status == 'new' %}
+                    <div class="space-y-4">
+                        <p class="text-gray-400">
+                            <i class="fas fa-info-circle mr-2"></i>
+                            Select a doctor for professional review of your diagnosis
+                        </p>
+                        <select id="doctorSelect" class="doctor-select">
+                            <option value="">Select a doctor...</option>
+                            {% for doctor in doctors %}
+                            <option value="{{ doctor.id }}">Dr. {{ doctor.name }} - {{ doctor.specialization }}</option>
+                            {% endfor %}
+                        </select>
+                        <button onclick="requestProfessionalReview()" 
+                                class="w-full bg-accent hover:bg-opacity-90 text-white px-4 py-3 rounded-lg font-medium transition duration-200 mt-4">
+                            <i class="fas fa-paper-plane mr-2"></i>
+                            Request Professional Review
+                        </button>
+                    </div>
+                    {% else %}
+                        {% if status == 'pending' %}
+                        <div class="flex items-center text-yellow-500">
+                            <i class="fas fa-clock mr-2"></i>
+                            <span>Pending doctor review</span>
+                        </div>
+                        {% elif status == 'approved' %}
+                        <div class="flex items-center text-green-500">
+                            <i class="fas fa-check-circle mr-2"></i>
+                            <span>Approved by doctor</span>
+                        </div>
+                        {% if doctor_notes %}
+                        <div class="mt-4 p-4 bg-opacity-5 bg-white rounded-lg">
+                            <h4 class="text-sm font-medium text-gray-400 mb-2">Doctor's Notes:</h4>
+                            <p class="text-gray-300">{{ doctor_notes }}</p>
+                        </div>
+                        {% endif %}
+                        {% elif status == 'rejected' %}
+                        <div class="flex items-center text-red-500">
+                            <i class="fas fa-times-circle mr-2"></i>
+                            <span>Changes requested by doctor</span>
+                        </div>
+                        {% if doctor_notes %}
+                        <div class="mt-4 p-4 bg-opacity-5 bg-white rounded-lg">
+                            <h4 class="text-sm font-medium text-gray-400 mb-2">Doctor's Notes:</h4>
+                            <p class="text-gray-300">{{ doctor_notes }}</p>
+                        </div>
+                        {% endif %}
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- JavaScript -->
+<script>
+const symptoms = {{ symptoms_dict|tojson|safe }};
+const symptomsInput = document.getElementById('symptomsInput');
+const searchResults = document.getElementById('searchResults');
+const selectedSymptoms = document.getElementById('selectedSymptoms');
+const symptomsHidden = document.getElementById('symptomsHidden');
+const form = document.getElementById('symptomForm');
+const loadingOverlay = document.getElementById('loadingOverlay');
+const successPopup = document.getElementById('successPopup');
+
+let selectedSymptomsList = [];
+
+// Initialize selected symptoms if there are any
+{% if selected_symptoms %}
+selectedSymptomsList = {{ selected_symptoms|tojson|safe }};
+updateSelectedSymptoms();
+{% endif %}
+
+function updateSelectedSymptoms() {
+    // Clear with fade out animation
+    const existingTags = selectedSymptoms.querySelectorAll('.symptom-tag');
+    existingTags.forEach(tag => {
+        tag.style.opacity = '0';
+        tag.style.transform = 'translateY(10px)';
+    });
+
+    setTimeout(() => {
+        selectedSymptoms.innerHTML = '';
+        selectedSymptomsList.forEach((symptom, index) => {
+            const tag = document.createElement('div');
+            tag.className = 'symptom-tag';
+            tag.innerHTML = `
+                <span class="text-black">${symptom.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</span>
+                <button class="ml-2 text-black opacity-60 hover:opacity-100 focus:outline-none" onclick="removeSymptom('${symptom}')">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+            
+            // Add fade in animation
+            tag.style.opacity = '0';
+            tag.style.transform = 'translateY(10px)';
+            selectedSymptoms.appendChild(tag);
+            
+            // Trigger animation with delay based on index
+            setTimeout(() => {
+                tag.style.opacity = '1';
+                tag.style.transform = 'translateY(0)';
+            }, index * 50);
+        });
+    }, existingTags.length ? 300 : 0);
+
+    symptomsHidden.value = JSON.stringify(selectedSymptomsList);
+
+    // Update symptom options visibility with animation
+    document.querySelectorAll('.symptom-option').forEach(option => {
+        const symptom = option.querySelector('span').textContent.toLowerCase().replace(/\s+/g, '_');
+        if (selectedSymptomsList.includes(symptom)) {
+            option.classList.add('opacity-50', 'pointer-events-none');
+            option.style.transform = 'scale(0.95)';
+        } else {
+            option.classList.remove('opacity-50', 'pointer-events-none');
+            option.style.transform = 'scale(1)';
+        }
+    });
+}
+
+function addSymptom(symptom) {
+    if (!selectedSymptomsList.includes(symptom)) {
+        // Add with animation
+        const option = document.querySelector(`.symptom-option span[data-symptom="${symptom}"]`)?.parentElement;
+        if (option) {
+            option.style.transform = 'scale(1.05)';
+            setTimeout(() => {
+                option.style.transform = 'scale(0.95)';
+                selectedSymptomsList.push(symptom);
+                updateSelectedSymptoms();
+            }, 150);
+        } else {
+            selectedSymptomsList.push(symptom);
+            updateSelectedSymptoms();
+        }
+    }
+    symptomsInput.value = '';
+    searchResults.style.display = 'none';
+}
+
+function removeSymptom(symptom) {
+    const index = selectedSymptomsList.indexOf(symptom);
+    if (index > -1) {
+        // Remove with animation
+        const tag = selectedSymptoms.children[index];
+        tag.style.opacity = '0';
+        tag.style.transform = 'translateY(10px)';
+        
+        setTimeout(() => {
+            selectedSymptomsList.splice(index, 1);
+            updateSelectedSymptoms();
+            
+            // Animate the corresponding option
+            const option = document.querySelector(`.symptom-option span[data-symptom="${symptom}"]`)?.parentElement;
+            if (option) {
+                option.style.transform = 'scale(1.05)';
+                setTimeout(() => {
+                    option.style.transform = 'scale(1)';
+                }, 150);
+            }
+        }, 300);
+    }
+}
+
+symptomsInput.addEventListener('input', function() {
+    const searchTerm = this.value.toLowerCase();
+    if (searchTerm.length < 2) {
+        searchResults.style.display = 'none';
+        return;
+    }
+
+    const matches = Object.keys(symptoms).filter(symptom => 
+        symptom.toLowerCase().includes(searchTerm) &&
+        !selectedSymptomsList.includes(symptom)
+    );
+
+    if (matches.length > 0) {
+        searchResults.innerHTML = matches
+            .map(symptom => `
+                <div class="search-result-item" onclick="addSymptom('${symptom}')">
+                    ${symptom.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                </div>
+            `)
+            .join('');
+        searchResults.style.display = 'block';
+    } else {
+        searchResults.style.display = 'none';
+    }
+});
+
+document.addEventListener('click', function(e) {
+    if (!symptomsInput.contains(e.target) && !searchResults.contains(e.target)) {
+        searchResults.style.display = 'none';
+    }
+});
+
+form.addEventListener('submit', function(e) {
+    if (selectedSymptomsList.length === 0) {
+        e.preventDefault();
+        alert('Please select at least one symptom');
+        return;
+    }
+    loadingOverlay.style.display = 'flex';
+});
+
+function requestProfessionalReview() {
+    const doctorId = document.getElementById('doctorSelect').value;
+    if (!doctorId) {
+        alert('Please select a doctor first');
+        return;
+    }
+
+    loadingOverlay.style.display = 'flex';
+    fetch('/request_approval', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            doctor_id: doctorId,
+            symptoms: selectedSymptomsList,
+            predicted_disease: '{{ predicted_disease }}',
+            diagnosis_id: '{{ diagnosis_id }}'
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        } else {
+            alert(data.message || 'Error requesting review');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error requesting review');
+    })
+    .finally(() => {
+        loadingOverlay.style.display = 'none';
+    });
+}
+
+// Show success popup if results are displayed
+{% if predicted_disease %}
+successPopup.style.display = 'block';
+setTimeout(() => {
+    successPopup.style.display = 'none';
+}, 3000);
+{% endif %}
+
+// Add transition styles to dynamic elements
+document.addEventListener('DOMContentLoaded', function() {
+    // Add transition styles to symptom tags
+    const style = document.createElement('style');
+    style.textContent = `
+        .symptom-tag {
+            transition: all 0.3s ease;
+        }
+        .symptom-option {
+            transition: all 0.3s ease;
+        }
+        .search-result-item {
+            transition: all 0.3s ease;
+        }
+    `;
+    document.head.appendChild(style);
+    
+    // Add data attributes to symptom options for easier selection
+    document.querySelectorAll('.symptom-option span').forEach(span => {
+        span.setAttribute('data-symptom', span.textContent.toLowerCase().replace(/\s+/g, '_'));
+    });
+});
+</script>
+{% endblock %} 

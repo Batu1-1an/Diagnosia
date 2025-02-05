@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Diagnosia - AI Health Analysis</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#003135',
+                        secondary: '#024950',
+                        accent: '#964734',
+                        highlight: '#0FA4AF',
+                        light: '#AFDDE5',
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-out',
+                        'slide-up': 'slideUp 0.5s ease-out',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(to bottom, #f8fafc, #f1f5f9);
+            min-height: 100vh;
+        }
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .hover-scale {
+            transition: transform 0.2s;
+        }
+        .hover-scale:hover {
+            transform: scale(1.02);
+        }
+        .success-popup {
+            display: none;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 16px 24px;
+            background-color: #22c55e;
+            color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            animation: slideIn 0.3s ease-out;
+        }
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="bg-primary">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <img class="h-12 w-12 rounded-full" src="{{ url_for('static', filename='img.png') }}" alt="Diagnosia">
+                    </div>
+                    <div class="hidden md:block">
+                        <div class="ml-10 flex items-baseline space-x-4">
+                            <a href="/" class="text-gray-300 hover:bg-secondary hover:text-light px-3 py-2 rounded-md text-sm font-medium">Home</a>
+                            <a href="/about" class="text-gray-300 hover:bg-secondary hover:text-light px-3 py-2 rounded-md text-sm font-medium">About</a>
+                            <a href="/contact" class="text-gray-300 hover:bg-secondary hover:text-light px-3 py-2 rounded-md text-sm font-medium">Contact</a>
+                            <a href="/blog" class="text-gray-300 hover:bg-secondary hover:text-light px-3 py-2 rounded-md text-sm font-medium">Blog</a>
+                            <a href="/history" class="text-gray-300 hover:bg-secondary hover:text-light px-3 py-2 rounded-md text-sm font-medium">View History</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-4 flex items-center md:ml-6">
+                        <button class="bg-accent hover:bg-opacity-90 text-white px-4 py-2 rounded-md text-sm font-medium">
+                            <a href="/diagnosis">Get Started</a>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-4xl mx-auto">
+            <!-- Header -->
+            <div class="text-center mb-12 animate-fade-in">
+                <h1 class="text-4xl font-extrabold text-primary mb-4">
+                    AI-Powered Health Analysis
+                </h1>
+                <p class="text-lg text-gray-600">
+                    Get instant insights about your health condition using our advanced AI system
+                </p>
+            </div>
+
+            <!-- Dr.AI Chat Button - Centered -->
+            <div class="flex justify-center mb-8">
+                <button id="chatButton" class="bg-accent hover:bg-opacity-90 text-white p-6 rounded-xl shadow-lg transition-transform hover:scale-105 flex items-center gap-3">
+                    <img src="{{ url_for('static', filename='doctor-ai.png') }}" alt="Dr.AI" class="w-12 h-12 rounded-full">
+                    <div class="text-left">
+                        <h3 class="font-semibold text-xl">Talk to Dr.AI</h3>
+                        <p class="text-sm text-gray-100">Your personal medical assistant</p>
+                    </div>
+                </button>
+            </div>
+
+            <!-- Symptom Input Section -->
+            <div id="symptomSection" class="glass-effect rounded-lg p-6 shadow-lg mb-8 animate-slide-up">
+                <form id="symptomForm" action="/diagnosis" method="POST">
+                    <div class="mb-4">
+                        <label for="symptoms" class="block text-lg font-medium text-primary mb-2">
+                            <i class="fas fa-notes-medical mr-2"></i>Enter Your Symptoms
+                        </label>
+                        <input type="text" id="symptomsDisplay" 
+                               class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-highlight focus:border-highlight"
+                               placeholder="e.g. fever, headache, cough" readonly>
+                        <!-- Hidden input to store actual symptoms array -->
+                        <input type="hidden" id="symptoms" name="symptoms">
+                    </div>
+
+                    <!-- Symptoms Toggle Button -->
+                    <button type="button" id="toggleSymptoms" 
+                            class="mb-4 text-accent hover:text-highlight flex items-center gap-2 transition-colors duration-200">
+                        <i class="fas fa-chevron-down" id="toggleIcon"></i>
+                        <span>View available symptoms</span>
+                    </button>
+
+                    <!-- Available Symptoms Grid -->
+                    <div id="symptomsGrid" class="hidden grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 mt-4 max-h-96 overflow-y-auto">
+                    </div>
+                </form>
+            </div>
+
+            <!-- Analyze Button -->
+            <div class="text-center">
+                <button onclick="analyzeSymptoms()" 
+                        class="bg-accent hover:bg-opacity-90 text-white px-8 py-3 rounded-lg text-lg font-semibold shadow-lg transition duration-200 flex items-center justify-center mx-auto">
+                    <i class="fas fa-stethoscope mr-2"></i>
+                    Analyze Symptoms
+                </button>
+            </div>
+
+            <!-- Results Section -->
+            {% if predicted_disease %}
+            <div class="glass-effect rounded-xl shadow-xl p-8 animate-slide-up hover-scale">
+                <h2 class="text-3xl font-bold text-primary mb-8 flex items-center">
+                    <i class="fas fa-clipboard-check text-accent mr-3"></i>
+                    Analysis Results
+                </h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Left Column -->
+                    <div class="space-y-8">
+                        <div class="bg-white rounded-lg p-6 shadow-md">
+                            <h3 class="text-xl font-semibold text-primary mb-3 flex items-center">
+                                <i class="fas fa-heartbeat text-accent mr-2"></i>
+                                Predicted Condition
+                            </h3>
+                            <p class="text-lg text-gray-700">{{ predicted_disease }}</p>
+                        </div>
+
+                        <div class="bg-white rounded-lg p-6 shadow-md">
+                            <h3 class="text-xl font-semibold text-primary mb-3 flex items-center">
+                                <i class="fas fa-info-circle text-accent mr-2"></i>
+                                Description
+                            </h3>
+                            <p class="text-gray-700 leading-relaxed">{{ dis_des }}</p>
+                        </div>
+
+                        <div class="bg-white rounded-lg p-6 shadow-md">
+                            <h3 class="text-xl font-semibold text-primary mb-3 flex items-center">
+                                <i class="fas fa-shield-alt text-accent mr-2"></i>
+                                Precautions
+                            </h3>
+                            <ul class="space-y-2">
+                                {% for precaution in my_precautions %}
+                                <li class="flex items-start">
+                                    <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                                    <span class="text-gray-700">{{ precaution }}</span>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+
+                        <div class="bg-white rounded-lg p-6 shadow-md">
+                            <h3 class="text-xl font-semibold text-primary mb-3 flex items-center">
+                                <i class="fas fa-user-md text-accent mr-2"></i>
+                                Doctor Approval Status
+                            </h3>
+                            {% if diagnosis_id %}
+                                {% if status == 'pending' %}
+                                    <div class="flex items-center text-yellow-600">
+                                        <i class="fas fa-clock mr-2"></i>
+                                        <span>Pending doctor review</span>
+                                    </div>
+                                {% elif status == 'approved' %}
+                                    <div class="flex items-center text-green-600">
+                                        <i class="fas fa-check-circle mr-2"></i>
+                                        <span>Approved by doctor</span>
+                                    </div>
+                                    {% if doctor_notes %}
+                                        <div class="mt-4">
+                                            <h4 class="text-sm font-medium text-gray-700 mb-2">Doctor's Notes:</h4>
+                                            <p class="text-gray-600 bg-gray-50 p-3 rounded-md">{{ doctor_notes }}</p>
+                                        </div>
+                                    {% endif %}
+                                {% elif status == 'rejected' %}
+                                    <div class="flex items-center text-red-600">
+                                        <i class="fas fa-times-circle mr-2"></i>
+                                        <span>Changes requested by doctor</span>
+                                    </div>
+                                    {% if doctor_notes %}
+                                        <div class="mt-4">
+                                            <h4 class="text-sm font-medium text-gray-700 mb-2">Doctor's Notes:</h4>
+                                            <p class="text-gray-600 bg-gray-50 p-3 rounded-md">{{ doctor_notes }}</p>
+                                        </div>
+                                    {% endif %}
+                                {% endif %}
+                            {% else %}
+                                <div class="text-gray-600">
+                                    <i class="fas fa-info-circle mr-2"></i>
+                                    <span>This diagnosis has not been submitted for review</span>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Right Column -->
+                    <div class="space-y-8">
+                        <div class="bg-white rounded-lg p-6 shadow-md">
+                            <h3 class="text-xl font-semibold text-primary mb-3 flex items-center">
+                                <i class="fas fa-pills text-accent mr-2"></i>
+                                Recommended Medications
+                            </h3>
+                            <ul class="space-y-2">
+                                {% for medication in medications %}
+                                <li class="flex items-start">
+                                    <i class="fas fa-prescription-bottle-alt text-blue-500 mt-1 mr-2"></i>
+                                    <span class="text-gray-700">{{ medication }}</span>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+
+                        <div class="bg-white rounded-lg p-6 shadow-md">
+                            <h3 class="text-xl font-semibold text-primary mb-3 flex items-center">
+                                <i class="fas fa-utensils text-accent mr-2"></i>
+                                Recommended Diet
+                            </h3>
+                            <ul class="space-y-2">
+                                {% for diet in my_diet %}
+                                <li class="flex items-start">
+                                    <i class="fas fa-carrot text-orange-500 mt-1 mr-2"></i>
+                                    <span class="text-gray-700">{{ diet }}</span>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+
+                        <div class="bg-white rounded-lg p-6 shadow-md">
+                            <h3 class="text-xl font-semibold text-primary mb-3 flex items-center">
+                                <i class="fas fa-running text-accent mr-2"></i>
+                                Recommended Exercises
+                            </h3>
+                            <p class="text-gray-700 leading-relaxed">{{ workout }}</p>
+                        </div>
+
+                        <!-- Enhanced Doctor Selection Section -->
+                        <div class="mt-8 bg-gradient-to-br from-white to-gray-50 rounded-lg shadow-lg p-8 animate-fade-in border border-gray-100">
+                            <div class="flex items-center mb-6">
+                                <div class="bg-accent bg-opacity-10 rounded-full p-3">
+                                    <i class="fas fa-user-md text-accent text-2xl"></i>
+                                </div>
+                                <h2 class="text-2xl font-semibold ml-4 text-gray-800">Get Expert Opinion</h2>
+                            </div>
+                            
+                            <div class="mb-6">
+                                <label for="doctor" class="block text-sm font-medium text-gray-700 mb-2">Select a Medical Professional</label>
+                                <div class="relative">
+                                    <select id="doctor" name="doctor" 
+                                            class="block w-full pl-3 pr-10 py-3 text-base border-gray-300 focus:ring-2 focus:ring-accent focus:border-accent rounded-lg shadow-sm transition-all duration-200 bg-white appearance-none cursor-pointer hover:border-accent">
+                                        <option value="">Choose a doctor...</option>
+                                    </select>
+                                    <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                                        <i class="fas fa-chevron-down text-gray-400"></i>
+                                    </div>
+                                </div>
+                                <p class="mt-2 text-sm text-gray-500">Our verified doctors will review your symptoms and provide professional advice</p>
+                            </div>
+
+                            <div class="space-y-4">
+                                <button onclick="requestDoctorApproval(false)" 
+                                        class="w-full bg-accent hover:bg-accent-dark focus:ring-4 focus:ring-accent focus:ring-opacity-50 text-white px-6 py-3 rounded-lg transition-all duration-200 transform hover:scale-[1.02] flex items-center justify-center"
+                                        id="requestApprovalBtn" disabled>
+                                    <i class="fas fa-stethoscope mr-2"></i>
+                                    Request Professional Review
+                                </button>
+                                <div class="flex items-center justify-center text-sm text-gray-500">
+                                    <i class="fas fa-shield-alt mr-2 text-accent"></i>
+                                    Your health information is secure and confidential
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if message %}
+            <div class="mt-6 animate-fade-in">
+                <div class="bg-red-50 border-l-4 border-red-400 p-4 rounded-md">
+                    <div class="flex items-center">
+                        <i class="fas fa-exclamation-circle text-red-400 mr-2"></i>
+                        <p class="text-red-700">{{ message }}</p>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Chat Interface -->
+            <div id="chatInterface" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+                <div class="bg-white w-full max-w-2xl h-[600px] rounded-xl shadow-2xl flex flex-col relative">
+                    <!-- Close button -->
+                    <button id="closeChatBtn" class="absolute top-4 right-4 text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                    
+                    <!-- Chat Header -->
+                    <div class="flex items-center gap-3 p-4 bg-primary rounded-t-xl">
+                        <img src="{{ url_for('static', filename='doctor-ai.png') }}" alt="Dr.AI" class="w-10 h-10 rounded-full">
+                        <div class="flex-1">
+                            <h3 class="text-white font-semibold">Dr.AI Assistant</h3>
+                            <p class="text-gray-300 text-sm">Medical AI Assistant</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Chat Messages -->
+                    <div id="chatMessages" class="flex-1 overflow-y-auto p-4 space-y-4">
+                        <!-- Initial message -->
+                        <div class="flex items-start gap-2 mb-4">
+                            <img src="{{ url_for('static', filename='doctor-ai.png') }}" alt="Dr.AI" class="w-8 h-8 rounded-full">
+                            <div class="bg-gray-100 rounded-lg p-3 max-w-[80%]">
+                                <p class="text-gray-800">Hello! I'm Dr.AI, your medical assistant. How can I help you today?</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Chat Input -->
+                    <div class="p-4 border-t flex flex-col gap-2">
+                        <form id="chatForm" class="flex gap-2">
+                            <input type="text" id="messageInput" 
+                                   class="flex-1 p-3 border rounded-lg focus:ring-2 focus:ring-highlight focus:border-highlight"
+                                   placeholder="Type your message...">
+                            <button type="submit" 
+                                    class="bg-accent hover:bg-opacity-90 text-white px-6 py-3 rounded-lg">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </form>
+
+                        <!-- Doctor Review Section in Chat -->
+                        <div class="mt-4 border-t pt-4">
+                            <div class="flex flex-col gap-3">
+                                <select id="chatDoctorSelect" 
+                                        class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-highlight focus:border-highlight">
+                                    <option value="">Choose a doctor...</option>
+                                </select>
+                                <button id="chatRequestApprovalBtn"
+                                        onclick="requestDoctorApproval(true)"
+                                        class="w-full bg-accent hover:bg-opacity-90 text-white px-6 py-3 rounded-lg flex items-center justify-center gap-2" 
+                                        disabled>
+                                    <i class="fas fa-user-md"></i>
+                                    Get Doctor's Opinion
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <footer class="bg-primary mt-16 py-8">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="text-center text-gray-300">
+                        <p>&copy; 2024 Diagnosia. All rights reserved.</p>
+                    </div>
+                </div>
+            </footer>
+
+            <!-- Diagnosis Details Modal -->
+            <div id="diagnosisDetailsModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden">
+                <div class="relative top-20 mx-auto p-5 border w-11/12 md:w-4/5 lg:w-3/4 shadow-lg rounded-md bg-white">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-2xl font-bold text-primary">Diagnosis Details</h3>
+                        <button onclick="closeDetailsModal()" class="text-gray-600 hover:text-gray-800">
+                            <i class="fas fa-times text-xl"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Disease Information -->
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <h4 class="text-lg font-semibold text-primary mb-3">Disease Information</h4>
+                            <div id="diseaseInfo" class="space-y-2">
+                                <p><strong>Diagnosed Disease:</strong> <span id="diagnosedDisease"></span></p>
+                                <p><strong>Doctor:</strong> <span id="doctorName"></span></p>
+                                <p><strong>Specialization:</strong> <span id="doctorSpecialization"></span></p>
+                            </div>
+                        </div>
+                        
+                        <!-- Symptoms -->
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <h4 class="text-lg font-semibold text-primary mb-3">Symptoms</h4>
+                            <div id="symptomsContainer" class="flex flex-wrap gap-2">
+                                <!-- Symptoms will be added here dynamically -->
+                            </div>
+                        </div>
+                        
+                        <!-- Medications -->
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <h4 class="text-lg font-semibold text-primary mb-3">Medications</h4>
+                            <ul id="medicationsList" class="list-disc list-inside space-y-1">
+                                <!-- Medications will be added here dynamically -->
+                            </ul>
+                        </div>
+                        
+                        <!-- Diet Recommendations -->
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <h4 class="text-lg font-semibold text-primary mb-3">Diet Recommendations</h4>
+                            <ul id="dietList" class="list-disc list-inside space-y-1">
+                                <!-- Diet recommendations will be added here dynamically -->
+                            </ul>
+                        </div>
+                        
+                        <!-- Exercise Recommendations -->
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <h4 class="text-lg font-semibold text-primary mb-3">Exercise Recommendations</h4>
+                            <p id="exerciseText" class="text-gray-700"></p>
+                        </div>
+                        
+                        <!-- Precautions -->
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <h4 class="text-lg font-semibold text-primary mb-3">Precautions</h4>
+                            <ul id="precautionsList" class="list-disc list-inside space-y-1">
+                                <!-- Precautions will be added here dynamically -->
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Single consolidated script block -->
+                        <script>
+                // Message display functions
+                function showSuccessMessage(message) {
+                    const alertDiv = document.createElement('div');
+                    alertDiv.className = 'fixed top-4 right-4 bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded shadow-lg z-50';
+                    alertDiv.innerHTML = `<i class="fas fa-check-circle mr-2"></i>${message}`;
+                    document.body.appendChild(alertDiv);
+                    setTimeout(() => alertDiv.remove(), 3000);
+                }
+
+                function showErrorMessage(message) {
+                    const alertDiv = document.createElement('div');
+                    alertDiv.className = 'fixed top-4 right-4 bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded shadow-lg z-50';
+                    alertDiv.innerHTML = `<i class="fas fa-exclamation-circle mr-2"></i>${message}`;
+                    document.body.appendChild(alertDiv);
+                    setTimeout(() => alertDiv.remove(), 3000);
+                }
+
+                // Global variables
+                            let loadingDoctors = false;
+                            let chatHistory = [];
+
+                // Symptom handling
+                const symptoms = [
+                    "itching", "skin_rash", "nodal_skin_eruptions", "continuous_sneezing", "shivering", "chills", 
+                    "joint_pain", "stomach_pain", "acidity", "ulcers_on_tongue", "muscle_wasting", "vomiting",
+                    "burning_micturition", "spotting_urination", "fatigue", "weight_gain", "anxiety", "cold_hands_and_feets",
+                    "mood_swings", "weight_loss", "restlessness", "lethargy", "patches_in_throat", "irregular_sugar_level",
+                    "cough", "high_fever", "sunken_eyes", "breathlessness", "sweating", "dehydration", "indigestion",
+                    "headache", "yellowish_skin", "dark_urine", "nausea", "loss_of_appetite", "pain_behind_the_eyes",
+                    "back_pain", "constipation", "abdominal_pain", "diarrhoea", "mild_fever", "yellow_urine",
+                    "yellowing_of_eyes", "acute_liver_failure", "fluid_overload", "swelling_of_stomach",
+                    "swelled_lymph_nodes", "malaise", "blurred_and_distorted_vision", "phlegm", "throat_irritation",
+                    "redness_of_eyes", "sinus_pressure", "runny_nose", "congestion", "chest_pain", "weakness_in_limbs",
+                    "fast_heart_rate"
+                ].sort();
+
+                // Create symptom buttons when the page loads
+                document.addEventListener('DOMContentLoaded', function() {
+                    const symptomsGrid = document.getElementById('symptomsGrid');
+                    if (symptomsGrid) {
+                        symptoms.forEach(symptom => {
+                            const button = document.createElement('button');
+                            button.type = 'button';
+                            button.className = 'p-2 text-sm bg-white border border-gray-200 rounded-md hover:bg-light hover:border-highlight transition-colors duration-200 text-left';
+                            button.textContent = symptom.replace(/_/g, ' ');
+                            button.dataset.symptom = symptom;
+                            button.onclick = () => addSymptom(symptom);
+                            symptomsGrid.appendChild(button);
+                        });
+                    }
+
+                    // Set up toggle button
+                    const toggleButton = document.getElementById('toggleSymptoms');
+                    const toggleIcon = document.getElementById('toggleIcon');
+                    if (toggleButton && toggleIcon) {
+                        toggleButton.onclick = () => {
+                            symptomsGrid.classList.toggle('hidden');
+                            toggleIcon.classList.toggle('fa-chevron-down');
+                            toggleIcon.classList.toggle('fa-chevron-up');
+                        };
+                    }
+                });
+
+                function addSymptom(symptom) {
+                    const symptomsDisplay = document.getElementById('symptomsDisplay');
+                    const currentSymptoms = symptomsDisplay.value
+                        .split(',')
+                        .map(s => s.trim())
+                        .filter(s => s !== '');
+                    
+                    if (!currentSymptoms.includes(symptom)) {
+                        currentSymptoms.push(symptom);
+                        symptomsDisplay.value = currentSymptoms.join(', ');
+                        document.getElementById('symptoms').value = JSON.stringify(currentSymptoms);
+                    }
+                }
+
+                function analyzeSymptoms() {
+                    const symptomsDisplay = document.getElementById('symptomsDisplay');
+                    const symptoms = symptomsDisplay.value.trim();
+                    if (!symptoms) {
+                        showErrorMessage('Please enter at least one symptom');
+                                    return;
+                                }
+
+                    const symptomsArray = symptoms.split(',')
+                        .map(s => s.trim())
+                        .filter(s => s !== '');
+                    
+                    document.getElementById('symptoms').value = JSON.stringify(symptomsArray);
+                    document.getElementById('symptomForm').submit();
+                }
+
+                // Details modal functions
+                function showDetails(diagnosisId) {
+                    fetch(`/diagnosis/details/${diagnosisId}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            // Update disease information
+                            document.getElementById('diagnosedDisease').textContent = data.disease || 'Not specified';
+                            document.getElementById('doctorName').textContent = data.doctor ? `Dr. ${data.doctor.name}` : 'Not assigned';
+                            document.getElementById('doctorSpecialization').textContent = data.doctor ? data.doctor.specialization : 'N/A';
+                            
+                            // Update symptoms
+                            const symptomsContainer = document.getElementById('symptomsContainer');
+                            symptomsContainer.innerHTML = '';
+                            if (data.symptoms && data.symptoms.length > 0) {
+                                data.symptoms.forEach(symptom => {
+                                    const span = document.createElement('span');
+                                    span.className = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800';
+                                    span.textContent = symptom.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                                    symptomsContainer.appendChild(span);
+                                });
+                            } else {
+                                symptomsContainer.innerHTML = '<p class="text-gray-500">No symptoms recorded</p>';
+                            }
+                            
+                            // Update medications
+                            const medicationsList = document.getElementById('medicationsList');
+                            medicationsList.innerHTML = '';
+                            if (data.medications && data.medications.length > 0) {
+                                data.medications.forEach(med => {
+                                    const li = document.createElement('li');
+                                    li.className = 'text-gray-700';
+                                    li.textContent = med;
+                                    medicationsList.appendChild(li);
+                                });
+                                    } else {
+                                medicationsList.innerHTML = '<li class="text-gray-500">No medications prescribed</li>';
+                            }
+                            
+                            // Update diet recommendations
+                            const dietList = document.getElementById('dietList');
+                            dietList.innerHTML = '';
+                            if (data.diet && data.diet.length > 0) {
+                                data.diet.forEach(item => {
+                                    const li = document.createElement('li');
+                                    li.className = 'text-gray-700';
+                                    li.textContent = item;
+                                    dietList.appendChild(li);
+                                });
+                            } else {
+                                dietList.innerHTML = '<li class="text-gray-500">No diet recommendations</li>';
+                            }
+                            
+                            // Update exercise recommendations
+                            document.getElementById('exerciseText').textContent = data.workout || 'No exercise recommendations';
+                            
+                            // Update precautions
+                            const precautionsList = document.getElementById('precautionsList');
+                            precautionsList.innerHTML = '';
+                            if (data.precautions && data.precautions.length > 0) {
+                                data.precautions.forEach(precaution => {
+                                    const li = document.createElement('li');
+                                    li.className = 'text-gray-700';
+                                    li.textContent = precaution;
+                                    precautionsList.appendChild(li);
+                                });
+                            } else {
+                                precautionsList.innerHTML = '<li class="text-gray-500">No precautions specified</li>';
+                            }
+                            
+                            // Show the modal
+                            document.getElementById('diagnosisDetailsModal').classList.remove('hidden');
+                        })
+                        .catch(error => {
+                            console.error('Error fetching diagnosis details:', error);
+                            showErrorMessage('Error loading diagnosis details');
+                        });
+                }
+
+                function closeDetailsModal() {
+                    document.getElementById('diagnosisDetailsModal').classList.add('hidden');
+                }
+
+                // Doctor loading and selection functions
+                function loadDoctors() {
+                    const doctorSelect = document.getElementById('doctor');
+                    const chatDoctorSelect = document.getElementById('chatDoctorSelect');
+                    loadingDoctors = true;
+                    
+                    const loadingOption = '<option value="">Loading doctors...</option>';
+                    doctorSelect.innerHTML = loadingOption;
+                    chatDoctorSelect.innerHTML = loadingOption;
+                    doctorSelect.disabled = true;
+                    chatDoctorSelect.disabled = true;
+
+                    fetch('/get_available_doctors')
+                        .then(response => response.json())
+                        .then(data => {
+                            const defaultOption = '<option value="">Choose a doctor...</option>';
+                            doctorSelect.innerHTML = defaultOption;
+                            chatDoctorSelect.innerHTML = defaultOption;
+                            
+                            if (data.doctors && data.doctors.length > 0) {
+                                data.doctors.forEach(doctor => {
+                                    const option = document.createElement('option');
+                                    option.value = doctor.id;
+                                    option.textContent = `Dr. ${doctor.name} - ${doctor.specialization}`;
+                                    doctorSelect.appendChild(option.cloneNode(true));
+                                    chatDoctorSelect.appendChild(option);
+                                });
+                            } else {
+                                const noDocsOption = '<option value="">No doctors available at the moment</option>';
+                                doctorSelect.innerHTML = noDocsOption;
+                                chatDoctorSelect.innerHTML = noDocsOption;
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error loading doctors:', error);
+                            const errorOption = '<option value="">Error loading doctors. Please try again.</option>';
+                            doctorSelect.innerHTML = errorOption;
+                            chatDoctorSelect.innerHTML = errorOption;
+                        })
+                        .finally(() => {
+                            loadingDoctors = false;
+                            doctorSelect.disabled = false;
+                            chatDoctorSelect.disabled = false;
+                            updateApprovalButtons();
+                        });
+                }
+
+                // Update both approval buttons based on chat history and doctor selection
+                function updateApprovalButtons() {
+                    const mainApprovalBtn = document.getElementById('requestApprovalBtn');
+                    const chatApprovalBtn = document.getElementById('chatRequestApprovalBtn');
+                    const doctorSelect = document.getElementById('doctor');
+                    const chatDoctorSelect = document.getElementById('chatDoctorSelect');
+
+                    const hasChat = chatHistory.length > 0;
+                    const hasMainDoctor = doctorSelect.value;
+                    const hasChatDoctor = chatDoctorSelect.value;
+
+                    mainApprovalBtn.disabled = !hasChat || !hasMainDoctor;
+                    chatApprovalBtn.disabled = !hasChat || !hasChatDoctor;
+                }
+
+                // Sync doctor selections between both dropdowns
+                function syncDoctorSelections(sourceId) {
+                    const source = document.getElementById(sourceId);
+                    const target = document.getElementById(sourceId === 'doctor' ? 'chatDoctorSelect' : 'doctor');
+                    target.value = source.value;
+                    updateApprovalButtons();
+                }
+
+                // Enhanced request approval function
+                async function requestDoctorApproval(fromChat = false) {
+                    if (loadingDoctors) {
+                        showErrorMessage('Please wait while we load the available doctors.');
+                        return;
+                    }
+
+                    const doctorId = fromChat ? 
+                        document.getElementById('chatDoctorSelect').value : 
+                        document.getElementById('doctor').value;
+
+                    if (!doctorId) {
+                        showErrorMessage('Please select a doctor to proceed with the review.');
+                        return;
+                    }
+
+                    if (chatHistory.length === 0) {
+                        showErrorMessage('Please have a conversation with Dr.AI first.');
+                        return;
+                    }
+
+                    const button = fromChat ? 
+                        document.getElementById('chatRequestApprovalBtn') : 
+                        document.getElementById('requestApprovalBtn');
+                    const originalContent = button.innerHTML;
+                    button.disabled = true;
+                    button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Requesting Review...';
+
+                    try {
+                        const response = await fetch('/request_chat_approval', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                doctor_id: doctorId,
+                                chat_history: chatHistory
+                            })
+                        });
+
+                        const data = await response.json();
+
+                        if (response.ok) {
+                            showSuccessMessage('Chat review requested successfully! Redirecting to history...');
+                            setTimeout(() => {
+                                window.location.href = '/history';
+                            }, 1500);
+                        } else {
+                            throw new Error(data.error || 'Failed to request review');
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                        showErrorMessage(error.message || 'An error occurred while requesting doctor review');
+                    } finally {
+                        button.disabled = false;
+                        button.innerHTML = originalContent;
+                    }
+                }
+
+                // Chat message handling
+                function appendMessage(role, content) {
+                    const chatMessages = document.getElementById('chatMessages');
+                    const messageDiv = document.createElement('div');
+                    messageDiv.className = 'flex items-start gap-2 mb-4';
+                    
+                    const isAI = role === 'ai';
+                    
+                    messageDiv.innerHTML = `
+                        ${isAI ? `<img src="{{ url_for('static', filename='doctor-ai.png') }}" alt="Dr.AI" class="w-8 h-8 rounded-full">` : ''}
+                        <div class="${isAI ? 'bg-gray-100' : 'bg-accent text-white ml-auto'} rounded-lg p-3 max-w-[80%]">
+                            <p>${content}</p>
+                        </div>
+                        ${!isAI ? `<img src="{{ url_for('static', filename='user-avatar.png') }}" alt="You" class="w-8 h-8 rounded-full">` : ''}
+                    `;
+                    
+                    chatMessages.appendChild(messageDiv);
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                }
+
+                // Initialize everything when the page loads
+                document.addEventListener('DOMContentLoaded', function() {
+                    // Load doctors immediately
+                    loadDoctors();
+
+                    // Add event listeners for doctor selection sync
+                    document.getElementById('doctor').addEventListener('change', () => syncDoctorSelections('doctor'));
+                    document.getElementById('chatDoctorSelect').addEventListener('change', () => syncDoctorSelections('chatDoctorSelect'));
+
+                    // Set up chat interface toggle
+                    const chatButton = document.getElementById('chatButton');
+                    const chatInterface = document.getElementById('chatInterface');
+                    const symptomSection = document.getElementById('symptomSection');
+                    const closeChatBtn = document.getElementById('closeChatBtn');
+
+                    if (chatButton && chatInterface && symptomSection) {
+                        chatButton.addEventListener('click', () => {
+                            chatInterface.classList.remove('hidden');
+                            symptomSection.classList.add('hidden');
+                        });
+
+                        if (closeChatBtn) {
+                            closeChatBtn.addEventListener('click', () => {
+                                chatInterface.classList.add('hidden');
+                                symptomSection.classList.remove('hidden');
+                            });
+                        }
+                    }
+
+                    // Set up chat form submission
+                    const chatForm = document.getElementById('chatForm');
+                    const messageInput = document.getElementById('messageInput');
+                    const chatMessages = document.getElementById('chatMessages');
+
+                    if (chatForm) {
+                        chatForm.addEventListener('submit', async (e) => {
+                            e.preventDefault();
+                            const message = messageInput.value.trim();
+                            if (!message) return;
+
+                            // Clear input
+                            messageInput.value = '';
+
+                            // Add user message to chat
+                            appendMessage('user', message);
+
+                            try {
+                                const response = await fetch('/chat', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    },
+                                    body: JSON.stringify({ message })
+                                });
+
+                                if (!response.ok) {
+                                    throw new Error('Failed to get response');
+                                }
+
+                                const data = await response.json();
+                                appendMessage('ai', data.response);
+
+                                // Save to chat history
+                                chatHistory.push(
+                                    { role: 'user', content: message },
+                                    { role: 'ai', content: data.response }
+                                );
+                                
+                                // Update approval button state
+                                updateApprovalButtons();
+                            } catch (error) {
+                                console.error('Error:', error);
+                                appendMessage('ai', 'Sorry, I encountered an error. Please try again.');
+                            }
+                        });
+                    }
+                });
+
+                // Rest of the existing code...
+            </script>
+        </div>
+    </div>
+</body>
+</html> 

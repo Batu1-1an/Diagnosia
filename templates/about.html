@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>About - Diagnosia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#003135',
+                        secondary: '#024950',
+                        accent: '#964734',
+                        highlight: '#0FA4AF',
+                        light: '#AFDDE5',
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-out',
+                        'slide-up': 'slideUp 0.5s ease-out',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(to bottom, #f8fafc, #f1f5f9);
+            min-height: 100vh;
+        }
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .hover-scale {
+            transition: transform 0.2s;
+        }
+        .hover-scale:hover {
+            transform: scale(1.02);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="bg-primary">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <img class="h-12 w-12 rounded-full" src="{{ url_for('static', filename='img.png') }}" alt="Diagnosia">
+                    </div>
+                    <div class="hidden md:block">
+                        <div class="ml-10 flex items-baseline space-x-4">
+                            <a href="/" class="text-gray-300 hover:bg-secondary hover:text-light px-3 py-2 rounded-md text-sm font-medium">Home</a>
+                            <a href="/about" class="text-light hover:bg-secondary px-3 py-2 rounded-md text-sm font-medium">About</a>
+                            <a href="/contact" class="text-gray-300 hover:bg-secondary hover:text-light px-3 py-2 rounded-md text-sm font-medium">Contact</a>
+                            <a href="/blog" class="text-gray-300 hover:bg-secondary hover:text-light px-3 py-2 rounded-md text-sm font-medium">Blog</a>
+                            <a href="/history" class="text-gray-300 hover:bg-secondary hover:text-light px-3 py-2 rounded-md text-sm font-medium">View History</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-4 flex items-center md:ml-6">
+                        <button class="bg-accent hover:bg-opacity-90 text-white px-4 py-2 rounded-md text-sm font-medium">
+                            <a href="/diagnosis">Get Started</a>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="bg-primary py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center animate-fade-in">
+                <h1 class="text-4xl font-extrabold text-light sm:text-5xl md:text-6xl">
+                    About Diagnosia
+                </h1>
+                <p class="mt-3 max-w-md mx-auto text-gray-300 sm:text-lg md:mt-5 md:text-xl md:max-w-3xl">
+                    Revolutionizing healthcare through artificial intelligence
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
+        <!-- Mission Section -->
+        <div class="glass-effect rounded-xl p-8 mb-12 animate-slide-up hover-scale">
+            <div class="flex items-center mb-6">
+                <div class="bg-accent bg-opacity-10 p-3 rounded-full mr-4">
+                    <i class="fas fa-bullseye text-accent text-2xl"></i>
+                </div>
+                <h2 class="text-3xl font-extrabold text-primary">Our Mission</h2>
+            </div>
+            <p class="text-gray-600 text-lg leading-relaxed">
+                At Diagnosia, we're committed to making healthcare more accessible and accurate through the power of artificial intelligence. Our advanced AI system analyzes symptoms to provide quick, reliable health insights and personalized recommendations.
+            </p>
+        </div>
+
+        <!-- How It Works Section -->
+        <div class="glass-effect rounded-xl p-8 mb-12 animate-slide-up hover-scale" style="animation-delay: 0.2s;">
+            <div class="flex items-center mb-8">
+                <div class="bg-accent bg-opacity-10 p-3 rounded-full mr-4">
+                    <i class="fas fa-cogs text-accent text-2xl"></i>
+                </div>
+                <h2 class="text-3xl font-extrabold text-primary">How It Works</h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <div class="bg-accent bg-opacity-10 w-12 h-12 rounded-full flex items-center justify-center mb-4">
+                        <i class="fas fa-brain text-accent text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-primary mb-3">AI-Powered Analysis</h3>
+                    <p class="text-gray-600">
+                        Our sophisticated AI algorithms process your symptoms and compare them against a vast database of medical knowledge.
+                    </p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <div class="bg-accent bg-opacity-10 w-12 h-12 rounded-full flex items-center justify-center mb-4">
+                        <i class="fas fa-chart-line text-accent text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-primary mb-3">Data-Driven Insights</h3>
+                    <p class="text-gray-600">
+                        We utilize machine learning models trained on extensive medical data to provide accurate health assessments.
+                    </p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <div class="bg-accent bg-opacity-10 w-12 h-12 rounded-full flex items-center justify-center mb-4">
+                        <i class="fas fa-user-md text-accent text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-primary mb-3">Personalized Care</h3>
+                    <p class="text-gray-600">
+                        Receive customized health recommendations based on your unique symptoms and medical profile.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Our Commitment Section -->
+        <div class="glass-effect rounded-xl p-8 mb-12 animate-slide-up hover-scale" style="animation-delay: 0.4s;">
+            <div class="flex items-center mb-6">
+                <div class="bg-accent bg-opacity-10 p-3 rounded-full mr-4">
+                    <i class="fas fa-shield-alt text-accent text-2xl"></i>
+                </div>
+                <h2 class="text-3xl font-extrabold text-primary">Our Commitment</h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <h3 class="text-xl font-semibold text-primary mb-3">Privacy & Security</h3>
+                    <p class="text-gray-600 mb-4">
+                        Your health data is protected with state-of-the-art encryption and security measures. We never share your personal information without your explicit consent.
+                    </p>
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold text-primary mb-3">Medical Excellence</h3>
+                    <p class="text-gray-600 mb-4">
+                        While our AI provides valuable health insights, we always recommend consulting with healthcare professionals for definitive medical advice.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Team Section -->
+        <div class="glass-effect rounded-xl p-8 animate-slide-up hover-scale" style="animation-delay: 0.6s;">
+            <div class="flex items-center mb-8">
+                <div class="bg-accent bg-opacity-10 p-3 rounded-full mr-4">
+                    <i class="fas fa-users text-accent text-2xl"></i>
+                </div>
+                <h2 class="text-3xl font-extrabold text-primary">Our Team</h2>
+            </div>
+            <div class="text-center">
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+                    Our team consists of dedicated healthcare professionals, AI experts, and data scientists working together to revolutionize the future of healthcare through innovative technology.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-primary mt-16 py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center text-gray-300">
+                <p>&copy; 2024 Diagnosia. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

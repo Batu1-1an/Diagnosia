@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}Radiology - Diagnosia{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold text-primary mb-8">Radiology Analysis</h1>
+        
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+            <h2 class="text-xl font-semibold mb-4">Upload X-Ray Image</h2>
+            <form action="{{ url_for('radiology') }}" method="post" enctype="multipart/form-data" class="space-y-4">
+                <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                    <input type="file" name="xray_image" id="xray_image" accept="image/*" class="hidden" required>
+                    <label for="xray_image" class="cursor-pointer">
+                        <div class="space-y-2">
+                            <i class="fas fa-upload text-4xl text-gray-400"></i>
+                            <p class="text-gray-600">Click to upload or drag and drop</p>
+                            <p class="text-sm text-gray-500">Supported formats: PNG, JPG, JPEG</p>
+                        </div>
+                    </label>
+                </div>
+                <button type="submit" class="w-full bg-primary hover:bg-secondary text-white font-bold py-2 px-4 rounded transition duration-300">
+                    Analyze Image
+                </button>
+            </form>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="mb-4 p-4 rounded-lg {% if category == 'error' %}bg-red-100 text-red-700{% else %}bg-green-100 text-green-700{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+</div>
+{% endblock %} 

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Diagnosia{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#003135',
+                        secondary: '#024950',
+                        accent: '#964734',
+                        highlight: '#0FA4AF',
+                        light: '#AFDDE5',
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-out',
+                        'slide-up': 'slideUp 0.5s ease-out',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(to bottom, #f8fafc, #f1f5f9);
+            min-height: 100vh;
+        }
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .hover-scale {
+            transition: transform 0.2s;
+        }
+        .hover-scale:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <nav class="bg-primary text-white shadow-lg fixed w-full z-50">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between h-16">
+                <div class="flex">
+                    <div class="flex-shrink-0 flex items-center">
+                        <a href="{{ url_for('index') }}" class="text-2xl font-bold">Diagnosia</a>
+                    </div>
+                    <div class="hidden md:ml-6 md:flex md:space-x-8">
+                        <a href="{{ url_for('index') }}" class="inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-light">Home</a>
+                        <a href="{{ url_for('about') }}" class="inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-light">About</a>
+                        <a href="{{ url_for('contact') }}" class="inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-light">Contact</a>
+                        {% if 'user_id' in session %}
+                            <a href="{{ url_for('diagnosis') }}" class="inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-light">Diagnosis</a>
+                            <a href="{{ url_for('radiology') }}" class="inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-light">
+                                <i class="fas fa-x-ray mr-1"></i>Radiology
+                            </a>
+                            <a href="{{ url_for('history') }}" class="inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-light">History</a>
+                            {% if session.get('role') == 'doctor' and session.get('is_verified') %}
+                                <a href="{{ url_for('doctor_dashboard') }}" class="inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-light">Doctor Dashboard</a>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="flex items-center">
+                    {% if 'user_id' in session %}
+                        <div class="relative group">
+                            <button class="flex items-center space-x-2 text-sm focus:outline-none">
+                                <span class="mr-1">{{ session.get('email', '').split('@')[0] }}</span>
+                                <i class="fas fa-chevron-down text-xs"></i>
+                            </button>
+                            <div class="absolute right-0 w-48 mt-2 py-2 bg-white rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible hover:opacity-100 hover:visible transition-all duration-300 ease-in-out">
+                                <a href="{{ url_for('profile') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    <i class="fas fa-user mr-2"></i> Profile
+                                </a>
+                                <a href="{{ url_for('history') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    <i class="fas fa-history mr-2"></i> History
+                                </a>
+                                {% if session.get('role') == 'admin' %}
+                                <div class="border-t border-gray-100"></div>
+                                <a href="{{ url_for('admin_dashboard') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    <i class="fas fa-shield-alt mr-2"></i> Admin Dashboard
+                                </a>
+                                {% endif %}
+                                <div class="border-t border-gray-100"></div>
+                                <a href="{{ url_for('logout') }}" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
+                                    <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                                </a>
+                            </div>
+                        </div>
+                    {% else %}
+                        <a href="{{ url_for('login') }}" class="bg-highlight hover:bg-teal-600 text-white font-bold py-2 px-4 rounded mr-2 transition duration-300">
+                            Login
+                        </a>
+                        <a href="{{ url_for('register') }}" class="bg-accent hover:bg-red-700 text-white font-bold py-2 px-4 rounded transition duration-300">
+                            Register
+                        </a>
+                        <a href="{{ url_for('register_doctor') }}" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
+                            <i class="fas fa-user-md mr-1"></i>
+                            Register as Doctor
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-4 pt-20 pb-8">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="bg-primary text-white py-8 mt-auto">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <h3 class="text-xl font-bold">Diagnosia</h3>
+                    <p class="text-sm mt-2">Your AI-powered health companion</p>
+                </div>
+                <div class="flex space-x-6">
+                    <a href="#" class="hover:text-light transition duration-300">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="#" class="hover:text-light transition duration-300">
+                        <i class="fab fa-facebook"></i>
+                    </a>
+                    <a href="#" class="hover:text-light transition duration-300">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="mt-8 text-center text-sm">
+                <p>&copy; 2024 Diagnosia. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html> 
