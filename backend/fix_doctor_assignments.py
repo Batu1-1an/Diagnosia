@@ -1,4 +1,4 @@
-from database import get_db
+from backend.database import get_db
 import sys
 
 def fix_doctor_assignments():

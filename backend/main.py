@@ -2,7 +2,9 @@ import os
 from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify
 from werkzeug.security import generate_password_hash
 from functools import wraps
-from database import get_db
+from backend.database import get_db
+
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 import json
 import pandas as pd
 import pickle
@@ -80,7 +82,10 @@ def cleanup():
 atexit.register(cleanup)
 
 # flask app
-app = Flask(__name__, static_url_path='/static', static_folder='static')
+app = Flask(__name__,
+    static_url_path='/static',
+    static_folder=os.path.join(PROJECT_ROOT, 'static'),
+    template_folder=os.path.join(PROJECT_ROOT, 'templates'))
 app.secret_key = os.urandom(24)  # Add secret key for sessions
 
 # Configure upload folder
@@ -153,20 +158,17 @@ def admin_required(f):
     return decorated_function
 
 # load databasedataset===================================
-# Get the directory containing the script
-current_dir = os.path.dirname(os.path.abspath(__file__))
-# Construct the path to the CSV file
-csv_path = os.path.join(current_dir, "datasets", "symtoms_df.csv")
+csv_path = os.path.join(PROJECT_ROOT, "datasets", "symtoms_df.csv")
 sym_des = pd.read_csv(csv_path)
-precautions = pd.read_csv("datasets/precautions_df.csv")
-workout = pd.read_csv("datasets/workout_df.csv")
-description = pd.read_csv("datasets/description.csv")
-medications = pd.read_csv('datasets/medications.csv')
-diets = pd.read_csv("datasets/diets.csv")
+precautions = pd.read_csv(os.path.join(PROJECT_ROOT, "datasets/precautions_df.csv"))
+workout = pd.read_csv(os.path.join(PROJECT_ROOT, "datasets/workout_df.csv"))
+description = pd.read_csv(os.path.join(PROJECT_ROOT, "datasets/description.csv"))
+medications = pd.read_csv(os.path.join(PROJECT_ROOT, 'datasets/medications.csv'))
+diets = pd.read_csv(os.path.join(PROJECT_ROOT, "datasets/diets.csv"))
 
 
 # load model===========================================
-svc = pickle.load(open('models/svc.pkl','rb'))
+svc = pickle.load(open(os.path.join(PROJECT_ROOT, 'models', 'svc.pkl'),'rb'))
 
 
 #============================================================

@@ -119,7 +119,7 @@ cp .env.example .env
 Migrations set up the `profiles`, `diagnoses`, and `chat_reviews` tables with RLS policies.
 
 ```bash
-python run_migrations.py
+python backend/run_migrations.py
 ```
 
 Or apply `migrations/*.sql` manually via the Supabase SQL editor.
@@ -135,7 +135,7 @@ jupyter notebook notebooks/Medicine\ Recommendation\ System.ipynb
 ### 7. Start the server
 
 ```bash
-python main.py
+python backend/main.py
 ```
 
 The app runs at `http://localhost:5000`.
@@ -165,14 +165,17 @@ The app runs at `http://localhost:5000`.
 
 ```
 Diagnosia/
-├── main.py                     # Flask application entry point
-├── database.py                 # Supabase client initialization
-├── run_migrations.py           # Database migration runner
-├── requirements.txt            # Python dependencies
-├── .env.example                # Environment variable template
-├── .gitignore
-├── LICENSE                     # MIT License
-├── CHANGELOG.md
+├── backend/                    # Python application source
+│   ├── main.py                 # Flask application entry point
+│   ├── database.py             # Supabase client initialization
+│   ├── run_migrations.py       # Database migration runner
+│   ├── fix_doctor_assignments.py
+│   ├── fix_jsonb.py
+│   └── tests/
+│       └── test_api.py         # API integration tests
+│
+├── docs/
+│   └── CHANGELOG.md            # Release history
 │
 ├── datasets/                   # ML training & recommendation data
 │   ├── Training.csv            # SVC training data (4920 samples)
@@ -213,8 +216,16 @@ Diagnosia/
 │   ├── grid.svg / dots.svg     # Background patterns
 │   └── img/
 │
-└── notebooks/                  # Jupyter notebooks
-    └── Medicine Recommendation System.ipynb
+├── notebooks/                  # Jupyter notebooks
+│   └── Medicine Recommendation System.ipynb
+│
+├── requirements.txt            # Python dependencies
+├── .env.example                # Environment variable template
+├── .gitignore
+├── LICENSE                     # MIT License
+├── README.md
+├── package.json
+└── tailwind.config.js
 ```
 
 ## Database Schema

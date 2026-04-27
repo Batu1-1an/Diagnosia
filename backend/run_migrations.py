@@ -1,5 +1,5 @@
 import os
-from database import get_db
+from backend.database import get_db
 from dotenv import load_dotenv
 
 load_dotenv()
