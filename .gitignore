@@ -28,3 +28,23 @@ Thumbs.db
 *.egg-info/
 dist/
 build/
+
+# Application logs
+*.log
+app.log
+
+# Machine learning model files (binary, large, generated)
+*.pkl
+
+# Uploaded files (patient data, X-rays)
+static/uploads/
+static/img/
+
+# Node.js
+node_modules/
+
+# IDE/Editor configs
+.idea/
+*.swp
+*.swo
+*~
