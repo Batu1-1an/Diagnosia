@@ -86,7 +86,7 @@ app = Flask(__name__,
     static_url_path='/static',
     static_folder=os.path.join(PROJECT_ROOT, 'static'),
     template_folder=os.path.join(PROJECT_ROOT, 'templates'))
-app.secret_key = os.urandom(24)  # Add secret key for sessions
+app.secret_key = os.getenv('SECRET_KEY', os.urandom(24).hex())
 
 # Configure upload folder
 UPLOAD_FOLDER = os.path.join('static', 'uploads')
