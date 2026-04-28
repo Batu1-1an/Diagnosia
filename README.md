@@ -10,6 +10,7 @@
     <img src="https://img.shields.io/badge/AI-Gemini%20Pro-8E75B2?style=flat-square&logo=google" alt="Gemini Pro">
     <img src="https://img.shields.io/badge/Database-Supabase-3ECF8E?style=flat-square&logo=supabase" alt="Supabase">
     <img src="https://img.shields.io/badge/style-Tailwind%20CSS-06B6D4?style=flat-square&logo=tailwindcss" alt="Tailwind CSS">
+    <img src="https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=docker&logoColor=white" alt="Docker">
   </p>
   <br>
 </div>
@@ -172,6 +173,8 @@ cp .env.example .env
 | `GOOGLE_API_KEY` | Google Gemini Pro API key |
 | `SECRET_KEY` | Flask secret key (random string) |
 
+> **⚠️ Important:** Previously, `SECRET_KEY` was generated via `os.urandom(24)` on every restart, invalidating all sessions on redeploy. The app now reads it from the environment — set a stable random value and keep it consistent across restarts.
+
 ### 5. Run database migrations
 
 ```bash
@@ -191,6 +194,22 @@ The app is now available at **http://localhost:5000**.
 > **Note:** If `models/svc.pkl` is missing, re-train via the Jupyter notebook: `jupyter notebook notebooks/Medicine\ Recommendation\ System.ipynb`
 
 </details>
+
+### Docker deployment (alternative)
+
+Build and run the production container:
+
+```bash
+docker build -t diagnosia .
+docker run -p 5000:5000 \
+  -e SUPABASE_URL=your_url \
+  -e SUPABASE_KEY=your_key \
+  -e GOOGLE_API_KEY=your_key \
+  -e SECRET_KEY=your_secret \
+  diagnosia
+```
+
+The `Dockerfile` uses a multi-stage build with `python:3.11-slim` and serves the app via Gunicorn for production-grade performance.
 
 ---
 
@@ -322,9 +341,6 @@ Diagnosia/
 │   ├── workout_df.csv            # Per-disease exercise regimens
 │   └── precautions_df.csv        # Per-disease precaution lists
 │
-├── docs/
-│   └── CHANGELOG.md              # Version history
-│
 ├── migrations/                   # Supabase SQL migrations
 │   ├── create_tables.sql         # profiles & diagnoses DDL
 │   ├── create_chat_reviews.sql   # chat_reviews table + RLS
@@ -355,8 +371,12 @@ Diagnosia/
 │   ├── about.html / contact.html / blog.html / developer.html
 │   └── login.html / register.html / register_doctor.html
 │
+├── .dockerignore                 # Docker build exclusions
 ├── .env.example                  # Environment variable template
 ├── .gitignore
+├── CHANGELOG.md                  # Version history
+├── CONTRIBUTING.md               # Contributor guide
+├── Dockerfile                    # Production container build
 ├── LICENSE                       # MIT License
 ├── README.md
 ├── package.json
